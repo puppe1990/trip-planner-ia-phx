@@ -49,14 +49,15 @@ defmodule TripPlannerIaWeb.HomeLive do
   }
 
   @impl true
-  def mount(_params, _session, socket) do
-    locale = locale_from_socket(socket)
+  def mount(_params, session, socket) do
+    locale = locale_from_mount(socket, session)
     ai_state = load_ai_settings(socket)
 
     {:ok,
      socket
      |> assign(:page_title, I18n.t(locale, "app_name"))
      |> assign(:locale, locale)
+     |> assign(:locale_switcher_live, true)
      |> assign(:view_state, :search)
      |> assign(:form, @default_form)
      |> assign(:active_region, QuickDestinations.default_region())
@@ -120,7 +121,9 @@ defmodule TripPlannerIaWeb.HomeLive do
       flash={@flash}
       current_scope={@current_scope}
       locale={@locale}
+      locale_switcher_live={@locale_switcher_live}
       ai_settings_open={@ai_settings_open}
+      ai_open_select={@ai_open_select}
       ai_providers={@ai_providers}
       ai_provider_id={@ai_provider_id}
       ai_model={@ai_model}
@@ -172,6 +175,21 @@ defmodule TripPlannerIaWeb.HomeLive do
   end
 
   @impl true
+  def handle_event("set_locale", %{"locale" => locale}, socket) do
+    locale = TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(locale)
+
+    Gettext.put_locale(
+      TripPlannerIaWeb.Gettext,
+      TripPlannerIaWeb.Plugs.SetLocale.gettext_locale(locale)
+    )
+
+    {:noreply,
+     socket
+     |> assign(:locale, locale)
+     |> assign(:page_title, I18n.t(locale, "app_name"))
+     |> push_event("locale_changed", %{locale: locale})}
+  end
+
   def handle_event("update_form", %{"form" => form_params}, socket) do
     form =
       socket.assigns.form
@@ -380,11 +398,21 @@ defmodule TripPlannerIaWeb.HomeLive do
   end
 
   def handle_event("open_ai_settings", _params, socket) do
-    {:noreply, assign(socket, ai_settings_open: true, ai_settings_error: nil)}
+    {:noreply,
+     assign(socket, ai_settings_open: true, ai_settings_error: nil, ai_open_select: nil)}
   end
 
   def handle_event("close_ai_settings", _params, socket) do
-    {:noreply, assign(socket, :ai_settings_open, false)}
+    {:noreply, assign(socket, ai_settings_open: false, ai_open_select: nil)}
+  end
+
+  def handle_event("toggle_ai_select", %{"field" => field}, socket) do
+    next = if socket.assigns.ai_open_select == field, do: nil, else: field
+    {:noreply, assign(socket, :ai_open_select, next)}
+  end
+
+  def handle_event("close_ai_select", _params, socket) do
+    {:noreply, assign(socket, :ai_open_select, nil)}
   end
 
   def handle_event("select_ai_provider", %{"provider" => provider_id}, socket) do
@@ -399,11 +427,12 @@ defmodule TripPlannerIaWeb.HomeLive do
     {:noreply,
      socket
      |> assign(:ai_provider_id, provider_id)
-     |> assign(:ai_model, default_model)}
+     |> assign(:ai_model, default_model)
+     |> assign(:ai_open_select, nil)}
   end
 
   def handle_event("select_ai_model", %{"model" => model}, socket) do
-    {:noreply, assign(socket, :ai_model, model)}
+    {:noreply, socket |> assign(:ai_model, model) |> assign(:ai_open_select, nil)}
   end
 
   def handle_event("save_ai_settings", _params, socket) do
@@ -449,7 +478,7 @@ defmodule TripPlannerIaWeb.HomeLive do
   def handle_info({:gen_error, _reason}, socket) do
     {:noreply,
      socket
-     |> put_flash(:error, "Failed to generate trip. Please try again.")
+     |> put_flash(:error, I18n.t(socket.assigns.locale, "errors.generation_failed"))
      |> assign(:view_state, :search)
      |> assign(:generation_progress, nil)}
   end
@@ -501,7 +530,7 @@ defmodule TripPlannerIaWeb.HomeLive do
       run_generation(user_id, form, locale, parent)
     end)
 
-    socket
+    {:noreply, socket}
   end
 
   defp run_generation(user_id, form, locale, parent) do
@@ -518,8 +547,9 @@ defmodule TripPlannerIaWeb.HomeLive do
 
       persisted = Trips.upsert_trip(user_id, form, plan)
       send(parent, {:gen_complete, persisted})
-    rescue
-      _ -> send(parent, {:gen_error, :generation_failed})
+    catch
+      kind, reason ->
+        send(parent, {:gen_error, {kind, reason}})
     end
   end
 
@@ -712,13 +742,9 @@ defmodule TripPlannerIaWeb.HomeLive do
 
   defp stringify_keys(value), do: value
 
-  defp locale_from_socket(socket) do
-    case Phoenix.LiveView.get_connect_info(socket, :cookies) do
-      %{"locale" => locale} -> TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(locale)
-      _ -> socket.assigns[:locale] || "pt-BR"
-    end
-  rescue
-    _ -> socket.assigns[:locale] || "pt-BR"
+  defp locale_from_mount(socket, session) do
+    socket.assigns[:locale] ||
+      TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(session["locale"])
   end
 
   defp load_ai_settings(socket) do
@@ -728,6 +754,7 @@ defmodule TripPlannerIaWeb.HomeLive do
 
     %{
       ai_settings_open: false,
+      ai_open_select: nil,
       ai_providers: AiConfig.list_provider_options(),
       ai_provider_id: config.provider_id,
       ai_model: config.model,

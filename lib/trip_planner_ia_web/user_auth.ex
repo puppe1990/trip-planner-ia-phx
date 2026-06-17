@@ -56,7 +56,7 @@ defmodule TripPlannerIaWeb.UserAuth do
     conn
     |> renew_session(nil)
     |> delete_resp_cookie(@remember_me_cookie, @remember_me_options)
-    |> redirect(to: ~p"/")
+    |> redirect(to: ~p"/users/log-in")
   end
 
   @doc """
@@ -108,20 +108,24 @@ defmodule TripPlannerIaWeb.UserAuth do
   # When the session is created, rather than extended, the renew_session
   # function will clear the session to avoid fixation attacks. See the
   # renew_session function to customize this behaviour.
-  defp create_or_extend_session(conn, user, params) do
+  defp create_or_extend_session(conn, user, _params) do
     token = Accounts.generate_user_session_token(user)
-    remember_me = get_session(conn, :user_remember_me)
 
     conn
     |> renew_session(user)
     |> put_token_in_session(token)
-    |> maybe_write_remember_me_cookie(token, params, remember_me)
+    |> write_remember_me_cookie(token)
   end
 
   # Do not renew session if the user is already logged in
   # to prevent CSRF errors or data being lost in tabs that are still open
-  defp renew_session(conn, user) when conn.assigns.current_scope.user.id == user.id do
-    conn
+  defp renew_session(conn, nil), do: do_renew_session(conn)
+
+  defp renew_session(conn, %Accounts.User{id: user_id}) do
+    case conn.assigns[:current_scope] do
+      %Scope{user: %Accounts.User{id: ^user_id}} -> conn
+      _ -> do_renew_session(conn)
+    end
   end
 
   # This function renews the session ID and erases the whole
@@ -140,21 +144,20 @@ defmodule TripPlannerIaWeb.UserAuth do
   #       |> put_session(:preferred_locale, preferred_locale)
   #     end
   #
-  defp renew_session(conn, _user) do
+  defp do_renew_session(conn) do
     delete_csrf_token()
+    locale = conn |> fetch_cookies() |> TripPlannerIaWeb.Plugs.SetLocale.fetch_locale()
+    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> put_session(:locale, locale)
+    |> maybe_put_return_to(user_return_to)
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}, _),
-    do: write_remember_me_cookie(conn, token)
-
-  defp maybe_write_remember_me_cookie(conn, token, _params, true),
-    do: write_remember_me_cookie(conn, token)
-
-  defp maybe_write_remember_me_cookie(conn, _token, _params, _), do: conn
+  defp maybe_put_return_to(conn, nil), do: conn
+  defp maybe_put_return_to(conn, path), do: put_session(conn, :user_return_to, path)
 
   defp write_remember_me_cookie(conn, token) do
     conn
@@ -163,8 +166,12 @@ defmodule TripPlannerIaWeb.UserAuth do
   end
 
   defp put_token_in_session(conn, token) do
-    put_session(conn, :user_token, token)
+    conn
+    |> put_session(:user_token, token)
+    |> put_session(:live_socket_id, user_session_topic(token))
   end
+
+  defp user_session_topic(token), do: "users_sessions:#{Base.url_encode64(token)}"
 
   @doc """
   Plug for routes that require sudo mode.
@@ -185,7 +192,7 @@ defmodule TripPlannerIaWeb.UserAuth do
   Plug for routes that require the user to not be authenticated.
   """
   def redirect_if_user_is_authenticated(conn, _opts) do
-    if conn.assigns.current_scope do
+    if conn.assigns.current_scope && conn.assigns.current_scope.user do
       conn
       |> redirect(to: signed_in_path(conn))
       |> halt()
@@ -241,28 +248,75 @@ defmodule TripPlannerIaWeb.UserAuth do
 
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
-      case session["user_token"] do
-        nil ->
-          Scope.for_user(nil)
-
-        token ->
-          case Accounts.get_user_by_session_token(token) do
-            {user, _} -> Scope.for_user(user)
-            nil -> Scope.for_user(nil)
-          end
-      end
+      Scope.for_user(user_from_session(session, socket))
     end)
   end
 
-  defp assign_locale(socket, _session) do
+  defp user_from_session(session, socket) do
+    case session_user_token(session, socket) do
+      nil ->
+        nil
+
+      token ->
+        case Accounts.get_user_by_session_token(token) do
+          {user, _} -> user
+          nil -> nil
+        end
+    end
+  end
+
+  defp session_user_token(session, socket) do
+    session["user_token"] || remember_me_token(socket)
+  end
+
+  defp remember_me_token(socket) do
+    with cookies when is_map(cookies) <- connect_cookies(socket),
+         header <- cookie_header(cookies),
+         %Plug.Conn{cookies: jar} <-
+           %Plug.Conn{secret_key_base: endpoint_secret_key_base()}
+           |> Plug.Conn.put_req_header("cookie", header)
+           |> Plug.Conn.fetch_cookies(signed: [@remember_me_cookie]),
+         token when is_binary(token) <- jar[@remember_me_cookie] do
+      token
+    else
+      _ -> nil
+    end
+  rescue
+    _ -> nil
+  end
+
+  defp connect_cookies(socket) do
+    Phoenix.LiveView.get_connect_info(socket, :cookies)
+  rescue
+    _ -> nil
+  end
+
+  defp cookie_header(cookies) do
+    Enum.map_join(cookies, "; ", fn {key, value} -> "#{key}=#{value}" end)
+  end
+
+  defp endpoint_secret_key_base do
+    TripPlannerIaWeb.Endpoint.config(:secret_key_base)
+  end
+
+  defp assign_locale(socket, session) do
     locale =
-      case Phoenix.LiveView.get_connect_info(socket, :cookies) do
-        %{"locale" => locale} -> TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(locale)
-        _ -> "pt-BR"
-      end
+      session["locale"]
+      |> locale_from_session_or_cookie(socket)
 
     Phoenix.Component.assign(socket, :locale, locale)
+  end
+
+  defp locale_from_session_or_cookie(nil, socket) do
+    case Phoenix.LiveView.get_connect_info(socket, :cookies) do
+      %{"locale" => locale} -> TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(locale)
+      _ -> "pt-BR"
+    end
   rescue
-    _ -> Phoenix.Component.assign(socket, :locale, "pt-BR")
+    _ -> "pt-BR"
+  end
+
+  defp locale_from_session_or_cookie(locale, _socket) do
+    TripPlannerIaWeb.Plugs.SetLocale.normalize_locale(locale)
   end
 end

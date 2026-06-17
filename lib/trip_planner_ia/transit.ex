@@ -34,6 +34,7 @@ defmodule TripPlannerIa.Transit do
     #{section_headers}
 
     Be direct and friendly. No generic introductions.
+    Use plain-text bullet lists starting with "-". Do not use markdown symbols like **bold** or *italic*.
     """
   end
 

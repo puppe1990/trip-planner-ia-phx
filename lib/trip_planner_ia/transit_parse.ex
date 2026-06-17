@@ -19,6 +19,29 @@ defmodule TripPlannerIa.TransitParse do
 
   @emoji_regex ~r/[\x{2011}-\x{26FF}]|[\x{E000}-\x{F8FF}]|[\x{1F300}-\x{1FAFF}]/u
 
+  @type inline_segment :: %{type: :text | :bold, text: String.t()}
+
+  @spec content_lines(String.t()) :: [[inline_segment()]]
+  def content_lines(content) when is_binary(content) do
+    content
+    |> String.split("\n")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+    |> Enum.map(&format_line/1)
+  end
+
+  def content_lines(_), do: []
+
+  @spec parse_inline_segments(String.t()) :: [inline_segment()]
+  def parse_inline_segments(text) when is_binary(text) do
+    ~r/(\*\*[^*]+\*\*)/u
+    |> Regex.split(text, include_captures: true, trim: true)
+    |> Enum.reject(&(&1 == ""))
+    |> Enum.map(&segment_from_part/1)
+  end
+
+  def parse_inline_segments(_), do: []
+
   @spec parse_transit_sections(String.t()) :: [transit_section()]
   def parse_transit_sections(raw_text) when is_binary(raw_text) do
     raw_text
@@ -119,4 +142,23 @@ defmodule TripPlannerIa.TransitParse do
   defp icon_for_key(:fares), do: "CreditCard"
   defp icon_for_key(:tips), do: "Lightbulb"
   defp icon_for_key(:other), do: "Bus"
+
+  defp format_line(line) do
+    line
+    |> strip_bullet_prefix()
+    |> parse_inline_segments()
+  end
+
+  defp strip_bullet_prefix(line) do
+    line
+    |> String.replace(~r/^[-*•]\s+/, "")
+    |> String.replace(~r/^\d+\.\s+/, "")
+  end
+
+  defp segment_from_part(part) do
+    case Regex.run(~r/^\*\*(.+)\*\*$/, part) do
+      [_, inner] -> %{type: :bold, text: inner}
+      _ -> %{type: :text, text: part}
+    end
+  end
 end

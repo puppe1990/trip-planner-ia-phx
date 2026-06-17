@@ -1,5 +1,8 @@
 import Config
 
+# Polling backend avoids mac_listener spawn failures under heavy file-watcher load.
+config :file_system, :backend, FileSystem.Backends.FSPoll
+
 config :trip_planner_ia, TripPlannerIa.Repo,
   adapter: Ecto.Adapters.LibSql,
   database: "priv/data/trip_planner_ia_dev.db",
@@ -29,7 +32,7 @@ config :trip_planner_ia, TripPlannerIaWeb.Endpoint,
 
 config :trip_planner_ia, TripPlannerIa.Mailer, adapter: Swoosh.Adapters.Local
 
-config :trip_planner_ia, dev_routes: true
+config :trip_planner_ia, dev_routes: true, load_dotenv: true
 config :logger, :default_formatter, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime

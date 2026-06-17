@@ -28,5 +28,27 @@ defmodule TripPlannerIa.TransitParseTest do
       assert metro.icon == "Train"
       assert String.contains?(ride_apps.content, "Uber")
     end
+
+    test "formats markdown bullets and bold text into structured lines" do
+      content = """
+      - **Uber**: disponível em Rio de Janeiro, com opções de corrida e táxi.
+      - **98Táxi**: aplicativo de táxi oficial da cidade do Rio de Janeiro.
+      """
+
+      [uber_line, taxi_line] = TransitParse.content_lines(content)
+
+      assert uber_line == [
+               %{type: :bold, text: "Uber"},
+               %{
+                 type: :text,
+                 text: ": disponível em Rio de Janeiro, com opções de corrida e táxi."
+               }
+             ]
+
+      assert taxi_line == [
+               %{type: :bold, text: "98Táxi"},
+               %{type: :text, text: ": aplicativo de táxi oficial da cidade do Rio de Janeiro."}
+             ]
+    end
   end
 end

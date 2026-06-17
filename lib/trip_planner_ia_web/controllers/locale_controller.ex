@@ -8,6 +8,7 @@ defmodule TripPlannerIaWeb.LocaleController do
     return_to = Map.get(params, "return_to", "/")
 
     conn
+    |> put_session(:locale, locale)
     |> put_resp_cookie("locale", locale,
       max_age: 365 * 24 * 60 * 60,
       same_site: "Lax"

@@ -7,6 +7,8 @@ defmodule TripPlannerIa.Application do
 
   @impl true
   def start(_type, _args) do
+    maybe_load_dotenv()
+
     children = [
       TripPlannerIaWeb.Telemetry,
       TripPlannerIa.Repo,
@@ -26,6 +28,12 @@ defmodule TripPlannerIa.Application do
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
+  defp maybe_load_dotenv do
+    if Application.get_env(:trip_planner_ia, :load_dotenv) do
+      TripPlannerIa.Config.EnvLoader.load_dotenv()
+    end
+  end
+
   @impl true
   def config_change(changed, _new, removed) do
     TripPlannerIaWeb.Endpoint.config_change(changed, removed)

@@ -29,7 +29,7 @@
           :if={@current_scope}
           class="p-4 bg-amber-50 border border-amber-100 text-amber-900 rounded-2xl text-xs text-center"
         >
-          You need to reauthenticate to perform sensitive actions on your account.
+          {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.reauth_required")}
         </p>
 
         <div class="text-center space-y-1">
@@ -41,21 +41,11 @@
           </p>
         </div>
 
-        <div
-          :if={local_mail_adapter?()}
-          class="p-4 bg-sky-50 border border-sky-100 text-sky-800 rounded-2xl text-xs"
-        >
-          <p>You are running the local mail adapter.</p>
-          <p>
-            To see sent emails, visit <.link href="/dev/mailbox" class="underline">the mailbox page</.link>.
-          </p>
-        </div>
-
         <.form
           :let={f}
           for={@form}
           as={:user}
-          id="login_form_magic"
+          id="login_form"
           action={~p"/users/log-in"}
           class="space-y-4"
         >
@@ -77,70 +67,26 @@
               class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
             />
           </div>
-          <button
-            type="submit"
-            class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all"
-          >
-            Log in with email →
-          </button>
-        </.form>
 
-        <div class="flex items-center gap-3 text-xs text-slate-400">
-          <div class="flex-1 border-t border-slate-100" />
-          <span>or</span>
-          <div class="flex-1 border-t border-slate-100" />
-        </div>
-
-        <.form
-          :let={f}
-          for={@form}
-          as={:user}
-          id="login_form_password"
-          action={~p"/users/log-in"}
-          class="space-y-4"
-        >
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-slate-700">
-              {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.email")}
-            </label>
-            <input
-              readonly={!!@current_scope}
-              name={f[:email].name}
-              id={"#{f[:email].id}_password"}
-              value={f[:email].value}
-              type="email"
-              autocomplete="username"
-              spellcheck="false"
-              required
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
-            />
-          </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-700">
               {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.password")}
             </label>
-            <input
-              name={f[:password].name}
+            <TripPlannerIaWeb.Components.PasswordInput.password_input
               id={f[:password].id}
-              type="password"
+              name={f[:password].name}
+              value={f[:password].value}
+              locale={@locale || "pt-BR"}
+              required
               autocomplete="current-password"
-              spellcheck="false"
-              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
             />
           </div>
+
           <button
             type="submit"
-            name={@form[:remember_me].name}
-            value="true"
             class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all"
           >
-            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.login")} →
-          </button>
-          <button
-            type="submit"
-            class="w-full py-3 bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-100 rounded-xl font-semibold transition-all"
-          >
-            Log in only this time
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.login")}
           </button>
         </.form>
 
