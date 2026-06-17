@@ -89,40 +89,46 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
     ~H"""
     <div class="space-y-8" id="trip-view-container">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-2xl print:hidden">
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center bg-slate-50 border border-slate-100 p-3 sm:p-4 rounded-2xl print:hidden">
         <button
           type="button"
           phx-click="back_to_search"
-          class="flex items-center gap-2 text-sm text-slate-600 hover:text-indigo-600 font-semibold cursor-pointer transition-colors"
+          class="flex items-center gap-2 text-sm text-slate-600 hover:text-indigo-600 font-semibold cursor-pointer transition-colors self-start"
         >
           <.icon name="hero-arrow-left" class="size-4" />
-          {I18n.t(@locale, "back")}
+          <span class="truncate">{I18n.t(@locale, "back")}</span>
         </button>
 
-        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <div class="flex items-center gap-2 w-full sm:w-auto sm:justify-end overflow-x-auto pb-0.5 sm:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
             type="button"
             phx-click="open_share"
-            class="flex items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer ml-auto sm:ml-0"
+            class="flex shrink-0 items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            aria-label={I18n.t(@locale, "common.share")}
+            title={I18n.t(@locale, "common.share")}
           >
-            <.icon name="hero-share" class="size-3.5 text-indigo-500" />
-            {I18n.t(@locale, "common.share")}
+            <.icon name="hero-share" class="size-4 sm:size-3.5 text-indigo-500" />
+            <span class="hidden sm:inline">{I18n.t(@locale, "common.share")}</span>
           </button>
           <button
             type="button"
             onclick="window.print()"
-            class="flex items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            class="flex shrink-0 items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            aria-label={I18n.t(@locale, "common.print")}
+            title={I18n.t(@locale, "common.print")}
           >
-            <.icon name="hero-printer" class="size-3.5" />
-            {I18n.t(@locale, "common.print")}
+            <.icon name="hero-printer" class="size-4 sm:size-3.5" />
+            <span class="hidden sm:inline">{I18n.t(@locale, "common.print")}</span>
           </button>
           <button
             type="button"
             phx-click="open_calendar"
-            class="flex items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-4 py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            class="flex shrink-0 items-center gap-2 text-xs font-semibold bg-white text-slate-700 hover:text-indigo-600 border border-slate-200 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            aria-label={I18n.t(@locale, "common.calendar")}
+            title={I18n.t(@locale, "common.calendar")}
           >
-            <.icon name="hero-calendar" class="size-3.5 text-rose-500" />
-            {I18n.t(@locale, "common.calendar")}
+            <.icon name="hero-calendar" class="size-4 sm:size-3.5 text-rose-500" />
+            <span class="hidden sm:inline">{I18n.t(@locale, "common.calendar")}</span>
           </button>
         </div>
       </div>

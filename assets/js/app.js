@@ -28,6 +28,26 @@ import topbar from '../vendor/topbar';
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
 
 const AppHooks = {
+  MobileHeaderMenu: {
+    mounted() {
+      this.onClickOutside = (event) => {
+        if (!this.el.contains(event.target)) {
+          this.el.open = false;
+        }
+      };
+
+      this.el.querySelectorAll('a, button').forEach((element) => {
+        element.addEventListener('click', () => {
+          this.el.open = false;
+        });
+      });
+
+      document.addEventListener('click', this.onClickOutside);
+    },
+    destroyed() {
+      document.removeEventListener('click', this.onClickOutside);
+    },
+  },
   Download: {
     mounted() {
       this.handleEvent('download', ({ filename, content, mime }) => {
@@ -65,6 +85,12 @@ window.addEventListener('phx:page-loading-stop', (_info) => topbar.hide());
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+  });
+}
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()

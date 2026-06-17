@@ -54,7 +54,11 @@ defmodule TripPlannerIaWeb.LocaleControllerTest do
     assert html =~ ~s(phx-value-locale="en")
     refute html =~ ~s(href="/locale/en)
 
-    html = view |> element("button[phx-value-locale=\"en\"]") |> render_click()
+    html =
+      view
+      |> element("#header-locale-switcher button[phx-value-locale=\"en\"]")
+      |> render_click()
+
     assert html =~ "virtual assistant"
     assert html =~ ~s(phx-value-locale="en")
   end
