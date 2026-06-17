@@ -19,6 +19,8 @@ defmodule TripPlannerIaWeb.ConnCase do
 
   using do
     quote do
+      use ExUnit.Case, async: false
+
       # The default endpoint for testing
       @endpoint TripPlannerIaWeb.Endpoint
 

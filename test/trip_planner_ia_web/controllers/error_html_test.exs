@@ -1,5 +1,5 @@
 defmodule TripPlannerIaWeb.ErrorHTMLTest do
-  use TripPlannerIaWeb.ConnCase, async: true
+  use TripPlannerIaWeb.ConnCase
 
   # Bring render_to_string/4 for testing custom views
   import Phoenix.Template, only: [render_to_string: 4]
