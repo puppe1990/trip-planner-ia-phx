@@ -23,12 +23,12 @@ defmodule TripPlannerIa.AccountsTest do
     end
 
     test "does not return the user if the password is not valid" do
-      user = user_fixture() |> set_password()
+      user = user_fixture()
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
-      %{id: id} = user = user_fixture() |> set_password()
+      %{id: id} = user = user_fixture()
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
@@ -49,40 +49,69 @@ defmodule TripPlannerIa.AccountsTest do
   end
 
   describe "register_user/1" do
-    test "requires email to be set" do
+    test "requires name, email and password" do
       {:error, changeset} = Accounts.register_user(%{})
 
-      assert %{email: ["can't be blank"]} = errors_on(changeset)
+      assert %{
+               name: ["can't be blank"],
+               email: ["can't be blank"],
+               password: ["can't be blank"]
+             } = errors_on(changeset)
     end
 
     test "validates email when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid"})
+      {:error, changeset} =
+        Accounts.register_user(%{
+          name: "Jane",
+          email: "not valid",
+          password: valid_user_password()
+        })
 
       assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
     end
 
     test "validates maximum values for email for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long})
+
+      {:error, changeset} =
+        Accounts.register_user(%{
+          name: "Jane",
+          email: too_long,
+          password: valid_user_password()
+        })
+
       assert "should be at most 160 character(s)" in errors_on(changeset).email
     end
 
     test "validates email uniqueness" do
       %{email: email} = user_fixture()
-      {:error, changeset} = Accounts.register_user(%{email: email})
+
+      {:error, changeset} =
+        Accounts.register_user(valid_user_attributes(email: email))
+
       assert "has already been taken" in errors_on(changeset).email
 
-      # Now try with the uppercased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
+      {:error, changeset} =
+        Accounts.register_user(valid_user_attributes(email: String.upcase(email)))
+
       assert "has already been taken" in errors_on(changeset).email
     end
 
-    test "registers users without password" do
+    test "registers users with password and confirms account" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+
+      {:ok, user} =
+        Accounts.register_user(
+          valid_user_attributes(
+            name: "Jane Doe",
+            email: email
+          )
+        )
+
       assert user.email == email
-      assert is_nil(user.hashed_password)
-      assert is_nil(user.confirmed_at)
+      assert user.name == "Jane Doe"
+      assert user.hashed_password
+      assert user.confirmed_at
       assert is_nil(user.password)
     end
   end
@@ -210,12 +239,12 @@ defmodule TripPlannerIa.AccountsTest do
     test "validates password", %{user: user} do
       {:error, changeset} =
         Accounts.update_user_password(user, %{
-          password: "not valid",
+          password: "bad",
           password_confirmation: "another"
         })
 
       assert %{
-               password: ["should be at least 12 character(s)"],
+               password: ["should be at least 8 character(s)"],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end

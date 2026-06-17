@@ -83,6 +83,8 @@ defmodule TripPlannerIaWeb.I18n do
       "errors.invalidShareLink" =>
         "O link de compartilhamento fornecido está inválido ou corrompido.",
       "errors.genericError" => "Não foi possível completar a operação. Tente novamente.",
+      "errors.generation_failed" =>
+        "Não foi possível gerar o roteiro. Tente novamente em instantes.",
       "trip.itineraryBadge" => "itinerário personalizado de %{days} dias",
       "trip.financialSimulator" => "Simulador Financeiro Local",
       "trip.travelersAdjust" =>
@@ -157,18 +159,26 @@ defmodule TripPlannerIaWeb.I18n do
       "months.Out" => "Outubro",
       "months.Nov" => "Novembro",
       "months.Dez" => "Dezembro",
-      "auth.login_title" => "Entrar",
-      "auth.login_subtitle" => "Acesse sua conta para planejar viagens",
-      "auth.signup_title" => "Criar Conta",
-      "auth.signup_subtitle" => "Comece a planejar viagens com IA",
+      "auth.login_title" => "Bem-vindo de volta",
+      "auth.login_subtitle" => "Entre para planejar e salvar seus roteiros de viagem com IA.",
+      "auth.signup_title" => "Crie sua conta",
+      "auth.signup_subtitle" =>
+        "Cadastre-se para gerar roteiros personalizados e salvá-los na nuvem.",
       "auth.email" => "E-mail",
       "auth.password" => "Senha",
+      "auth.name" => "Nome",
+      "auth.show_password" => "Mostrar senha",
+      "auth.hide_password" => "Ocultar senha",
       "auth.login" => "Entrar",
       "auth.signup" => "Criar conta",
       "auth.no_account" => "Não tem conta?",
       "auth.has_account" => "Já tem conta?",
       "auth.logging_in" => "Entrando...",
-      "auth.signing_up" => "Criando conta..."
+      "auth.signing_up" => "Criando conta...",
+      "auth.login_error" => "E-mail ou senha incorretos.",
+      "auth.signup_error" => "Não foi possível criar a conta. Tente novamente.",
+      "auth.reauth_required" =>
+        "Você precisa entrar novamente para realizar ações sensíveis na sua conta."
     },
     "en" => %{
       "app_name" => "TripPlanner",
@@ -250,6 +260,7 @@ defmodule TripPlannerIaWeb.I18n do
       "aiSettings.hint" => "Your preferences are saved to your account for future generations.",
       "errors.invalidShareLink" => "The share link is invalid or corrupted.",
       "errors.genericError" => "Could not complete the operation. Please try again.",
+      "errors.generation_failed" => "Could not generate the itinerary. Please try again shortly.",
       "trip.itineraryBadge" => "personalized %{days}-day itinerary",
       "trip.financialSimulator" => "Local Financial Simulator",
       "trip.travelersAdjust" =>
@@ -322,18 +333,26 @@ defmodule TripPlannerIaWeb.I18n do
       "months.Out" => "October",
       "months.Nov" => "November",
       "months.Dez" => "December",
-      "auth.login_title" => "Log in",
-      "auth.login_subtitle" => "Access your account to plan trips",
-      "auth.signup_title" => "Create Account",
-      "auth.signup_subtitle" => "Start planning trips with AI",
+      "auth.login_title" => "Welcome back",
+      "auth.login_subtitle" => "Sign in to plan and save your AI trip itineraries.",
+      "auth.signup_title" => "Create your account",
+      "auth.signup_subtitle" =>
+        "Sign up to generate personalized itineraries and save them to the cloud.",
       "auth.email" => "Email",
       "auth.password" => "Password",
-      "auth.login" => "Log in",
-      "auth.signup" => "Sign up",
+      "auth.name" => "Name",
+      "auth.show_password" => "Show password",
+      "auth.hide_password" => "Hide password",
+      "auth.login" => "Sign in",
+      "auth.signup" => "Create account",
       "auth.no_account" => "Don't have an account?",
       "auth.has_account" => "Already have an account?",
-      "auth.logging_in" => "Logging in...",
-      "auth.signing_up" => "Creating account..."
+      "auth.logging_in" => "Signing in...",
+      "auth.signing_up" => "Creating account...",
+      "auth.login_error" => "Incorrect email or password.",
+      "auth.signup_error" => "Could not create account. Please try again.",
+      "auth.reauth_required" =>
+        "You need to sign in again to perform sensitive actions on your account."
     }
   }
 

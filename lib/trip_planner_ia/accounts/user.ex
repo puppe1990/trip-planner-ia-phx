@@ -3,6 +3,7 @@ defmodule TripPlannerIa.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -81,10 +82,30 @@ defmodule TripPlannerIa.Accounts.User do
     |> validate_password(opts)
   end
 
+  @doc """
+  A user changeset for registration with name, email, and password.
+  """
+  def registration_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:name, :email, :password])
+    |> validate_required([:name, :email, :password])
+    |> validate_length(:name, min: 1, max: 160)
+    |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, ~r/^[^@,;\s]+@[^@,;\s]+$/,
+      message: "must have the @ sign and no spaces"
+    )
+    |> validate_length(:email, max: 160)
+    |> unsafe_validate_unique(:email, TripPlannerIa.Repo)
+    |> unique_constraint(:email)
+    |> validate_length(:password, min: 8, max: 72)
+    |> put_change(:confirmed_at, DateTime.utc_now(:second))
+    |> maybe_hash_password(hash_password: true)
+  end
+
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 8, max: 72)
     # Examples of additional password validation:
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")

@@ -597,8 +597,21 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
         <div :if={@active_transit_section} class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
           <h4 class="font-bold text-slate-800 text-sm mb-2">{@active_transit_section.title}</h4>
-          <div class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
-            {@active_transit_section.content}
+          <div class="space-y-2">
+            <%= for segments <- TripPlannerIa.TransitParse.content_lines(@active_transit_section.content) do %>
+              <div class="flex items-start gap-2">
+                <span class="text-[10px] text-indigo-500 mt-1">✦</span>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  <%= for segment <- segments do %>
+                    <%= if segment.type == :bold do %>
+                      <strong class="font-semibold text-slate-800">{segment.text}</strong>
+                    <% else %>
+                      {segment.text}
+                    <% end %>
+                  <% end %>
+                </p>
+              </div>
+            <% end %>
           </div>
         </div>
 

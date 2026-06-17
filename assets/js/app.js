@@ -44,6 +44,10 @@ const AppHooks = {
       this.handleEvent('copy_to_clipboard', ({ text }) => {
         navigator.clipboard.writeText(text);
       });
+      this.handleEvent('locale_changed', ({ locale }) => {
+        const maxAge = 365 * 24 * 60 * 60;
+        document.cookie = `locale=${encodeURIComponent(locale)};path=/;max-age=${maxAge};samesite=lax`;
+      });
     },
   },
 };

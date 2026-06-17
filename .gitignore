@@ -36,6 +36,9 @@ npm-debug.log
 /node_modules/
 /assets/node_modules/
 
+# Playwright CLI artifacts
+.playwright-cli/
+
 # Environment and local databases
 .env
 /priv/data/*.db

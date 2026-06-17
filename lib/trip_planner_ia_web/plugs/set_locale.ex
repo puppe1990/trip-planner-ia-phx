@@ -8,15 +8,28 @@ defmodule TripPlannerIaWeb.Plugs.SetLocale do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    locale =
-      conn.cookies["locale"]
-      |> normalize_locale()
+    conn = fetch_cookies(conn)
+    locale = fetch_locale(conn)
 
     Gettext.put_locale(TripPlannerIaWeb.Gettext, gettext_locale(locale))
 
     conn
     |> assign(:locale, locale)
   end
+
+  def fetch_locale(conn) do
+    conn
+    |> get_session(:locale)
+    |> locale_or(cookie_locale(conn))
+    |> normalize_locale()
+  end
+
+  defp cookie_locale(%Plug.Conn{cookies: %Plug.Conn.Unfetched{}}), do: nil
+
+  defp cookie_locale(%Plug.Conn{cookies: cookies}), do: cookies["locale"]
+
+  defp locale_or(nil, cookie), do: cookie
+  defp locale_or(locale, _cookie), do: locale
 
   def normalize_locale(nil), do: @default_locale
 
