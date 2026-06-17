@@ -51,6 +51,9 @@ jobs:
       - name: Lint (Credo)
         run: mix credo suggest --min-priority higher
 
+      - name: Prepare database directory
+        run: mkdir -p priv/data
+
       - name: Run tests
         run: mix test
 
