@@ -7,8 +7,7 @@ defmodule TripPlannerIa.AiConfig do
     @impl true
     def exception(provider) do
       %__MODULE__{
-        message:
-          ~s(Invalid AI_PROVIDER "#{provider}". Expected "gemini" or "nvidia-nim".)
+        message: ~s(Invalid AI_PROVIDER "#{provider}". Expected "gemini" or "nvidia-nim".)
       }
     end
   end

@@ -12,7 +12,8 @@ defmodule TripPlannerIaWeb.I18n do
       "back" => "Voltar para Configurações",
       "footer_copyright" => "© 2026 TripPlanner IA. Roteiros inteligentes com IA.",
       "search.quick_title" => "Comece Rápido",
-      "search.quick_subtitle" => "Destinos populares com um clique — personalize depois se quiser.",
+      "search.quick_subtitle" =>
+        "Destinos populares com um clique — personalize depois se quiser.",
       "search.form_title" => "Planeje sua Viagem",
       "search.destination" => "Destino",
       "search.destination_placeholder" => "Ex: Paris, França ou Rio de Janeiro, Brasil",
@@ -77,12 +78,15 @@ defmodule TripPlannerIaWeb.I18n do
       "aiSettings.structuredJson" => "JSON estruturado",
       "aiSettings.webGrounding" => "Busca web",
       "aiSettings.webGroundingUnavailable" => "Busca web indisponível",
-      "aiSettings.hint" => "Suas preferências são salvas na conta e usadas nas próximas gerações.",
-      "errors.invalidShareLink" => "O link de compartilhamento fornecido está inválido ou corrompido.",
+      "aiSettings.hint" =>
+        "Suas preferências são salvas na conta e usadas nas próximas gerações.",
+      "errors.invalidShareLink" =>
+        "O link de compartilhamento fornecido está inválido ou corrompido.",
       "errors.genericError" => "Não foi possível completar a operação. Tente novamente.",
       "trip.itineraryBadge" => "itinerário personalizado de %{days} dias",
       "trip.financialSimulator" => "Simulador Financeiro Local",
-      "trip.travelersAdjust" => "Ajuste o número de pessoas para estimativa de custo total do grupo durante os %{days} dias:",
+      "trip.travelersAdjust" =>
+        "Ajuste o número de pessoas para estimativa de custo total do grupo durante os %{days} dias:",
       "trip.travelersCount" => "Quantidade de Viajantes",
       "trip.hotelLine" => "Hospedagem (%{rooms} d.duplo)",
       "trip.foodLine" => "Alimentação (%{count} pessoas)",
@@ -101,7 +105,8 @@ defmodule TripPlannerIaWeb.I18n do
       "trip.liveSearch" => "Busca ao Vivo",
       "trip.transitSubtitle" => "Consulte aplicativos de corrida, passes e regras de locomoção",
       "trip.transitCtaTitle" => "Como se locomover em %{destination}?",
-      "trip.transitCtaDesc" => "Pesquise com Google Search por tarifas, apps e passes integrados.",
+      "trip.transitCtaDesc" =>
+        "Pesquise com Google Search por tarifas, apps e passes integrados.",
       "trip.transitSearch" => "Pesquisar Aplicativos & Tarifas Atuais",
       "trip.transitLoading" => "Utilizando o Google Search...",
       "trip.transitLoadingDesc" => "Buscando aplicativos de corrida, metrô e tarifas vigentes.",
@@ -129,7 +134,8 @@ defmodule TripPlannerIaWeb.I18n do
       "trip.shareModalTitle" => "Conectar Acompanhantes",
       "trip.shareModalDesc" => "Envie o itinerário completo para seus parceiros de jornada",
       "trip.calendarModalTitle" => "Exportar para Agenda",
-      "trip.calendarModalDesc" => "Gere um arquivo universal e adicione as paradas na sua agenda.",
+      "trip.calendarModalDesc" =>
+        "Gere um arquivo universal e adicione as paradas na sua agenda.",
       "trip.startDate" => "Data de início da viagem",
       "trip.downloadIcs" => "Baixar Arquivo de Calendário (.ics)",
       "trip.mapTitle" => "Roteiro Geográfico Interativo",
@@ -174,7 +180,8 @@ defmodule TripPlannerIaWeb.I18n do
       "back" => "Back to Settings",
       "footer_copyright" => "© 2026 TripPlanner AI. Smart itineraries powered by AI.",
       "search.quick_title" => "Quick Start",
-      "search.quick_subtitle" => "Popular destinations in one click — customize later if you want.",
+      "search.quick_subtitle" =>
+        "Popular destinations in one click — customize later if you want.",
       "search.form_title" => "Plan Your Trip",
       "search.destination" => "Destination",
       "search.destination_placeholder" => "E.g. Paris, France or Rio de Janeiro, Brazil",
@@ -216,7 +223,8 @@ defmodule TripPlannerIaWeb.I18n do
       "saved.subtitle" => "Plans archived in your account.",
       "saved.search_placeholder" => "Search saved destination...",
       "saved.empty_title" => "No saved itineraries yet",
-      "saved.empty_desc" => "Generate your first itinerary and it will appear here automatically.",
+      "saved.empty_desc" =>
+        "Generate your first itinerary and it will appear here automatically.",
       "saved.no_results" => "No results for \"%{term}\"",
       "trip.summary" => "Summary",
       "trip.days_title" => "Day-by-Day Itinerary",
@@ -244,7 +252,8 @@ defmodule TripPlannerIaWeb.I18n do
       "errors.genericError" => "Could not complete the operation. Please try again.",
       "trip.itineraryBadge" => "personalized %{days}-day itinerary",
       "trip.financialSimulator" => "Local Financial Simulator",
-      "trip.travelersAdjust" => "Adjust the number of travelers for a group cost estimate over %{days} days:",
+      "trip.travelersAdjust" =>
+        "Adjust the number of travelers for a group cost estimate over %{days} days:",
       "trip.travelersCount" => "Number of Travelers",
       "trip.hotelLine" => "Lodging (%{rooms} double room(s))",
       "trip.foodLine" => "Food (%{count} people)",

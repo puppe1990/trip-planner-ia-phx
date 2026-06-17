@@ -76,7 +76,10 @@ defmodule TripPlannerIaWeb.Components.AiSettingsModal do
             </button>
           </div>
 
-          <p :if={@error} class="mb-4 rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          <p
+            :if={@error}
+            class="mb-4 rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-700"
+          >
             {@error}
           </p>
 
@@ -128,7 +131,10 @@ defmodule TripPlannerIaWeb.Components.AiSettingsModal do
               </select>
             </div>
 
-            <div :if={@selected_provider} class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+            <div
+              :if={@selected_provider}
+              class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4"
+            >
               <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
                 {I18n.t(@locale, "aiSettings.capabilities")}
               </p>
@@ -156,7 +162,9 @@ defmodule TripPlannerIaWeb.Components.AiSettingsModal do
               disabled={@saving}
               class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
-              {if @saving, do: I18n.t(@locale, "aiSettings.saving"), else: I18n.t(@locale, "aiSettings.save")}
+              {if @saving,
+                do: I18n.t(@locale, "aiSettings.saving"),
+                else: I18n.t(@locale, "aiSettings.save")}
             </button>
           </div>
         </div>
@@ -166,8 +174,10 @@ defmodule TripPlannerIaWeb.Components.AiSettingsModal do
   end
 
   defp capability_badge(true),
-    do: "text-[10px] font-bold px-2 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-100"
+    do:
+      "text-[10px] font-bold px-2 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-100"
 
   defp capability_badge(false),
-    do: "text-[10px] font-bold px-2 py-1 rounded-full border bg-slate-100 text-slate-500 border-slate-200"
+    do:
+      "text-[10px] font-bold px-2 py-1 rounded-full border bg-slate-100 text-slate-500 border-slate-200"
 end

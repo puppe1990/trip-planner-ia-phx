@@ -92,7 +92,10 @@ defmodule TripPlannerIa.Llm.GeminiProvider do
     }
   end
 
-  defp post_generate_content(%__MODULE__{api_key: api_key, model: model, req_options: req_options}, body) do
+  defp post_generate_content(
+         %__MODULE__{api_key: api_key, model: model, req_options: req_options},
+         body
+       ) do
     url = "#{@gemini_base_url}/#{model}:generateContent"
 
     case Req.post(url, [params: [key: api_key], json: body] ++ req_options) do
@@ -110,7 +113,9 @@ defmodule TripPlannerIa.Llm.GeminiProvider do
     end
   end
 
-  defp extract_text(%{"candidates" => [%{"content" => %{"parts" => [%{"text" => text} | _]}} | _]})
+  defp extract_text(%{
+         "candidates" => [%{"content" => %{"parts" => [%{"text" => text} | _]}} | _]
+       })
        when is_binary(text) do
     text
   end

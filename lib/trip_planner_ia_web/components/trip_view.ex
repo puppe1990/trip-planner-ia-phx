@@ -33,10 +33,17 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
     filtered_points =
       case assigns.map_filter_day do
-        "all" -> map_points
-        day when is_integer(day) -> Enum.filter(map_points, &(&1.day_number == day))
-        day when is_binary(day) -> Enum.filter(map_points, &(&1.day_number == String.to_integer(day)))
-        _ -> map_points
+        "all" ->
+          map_points
+
+        day when is_integer(day) ->
+          Enum.filter(map_points, &(&1.day_number == day))
+
+        day when is_binary(day) ->
+          Enum.filter(map_points, &(&1.day_number == String.to_integer(day)))
+
+        _ ->
+          map_points
       end
 
     routes_path = MapPoints.build_routes_path(filtered_points)
@@ -49,8 +56,11 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
     transit_sections =
       case assigns.transit_data do
-        %{raw_text: text} when is_binary(text) -> TripPlannerIa.TransitParse.parse_transit_sections(text)
-        _ -> []
+        %{raw_text: text} when is_binary(text) ->
+          TripPlannerIa.TransitParse.parse_transit_sections(text)
+
+        _ ->
+          []
       end
 
     active_transit_section = Enum.at(transit_sections, assigns.transit_tab_index)
@@ -210,7 +220,10 @@ defmodule TripPlannerIaWeb.Components.TripView do
             {@destination}
           </span>
         </h1>
-        <p :if={@tagline} class="text-lg md:text-xl font-bold tracking-tight text-indigo-200 italic max-w-2xl">
+        <p
+          :if={@tagline}
+          class="text-lg md:text-xl font-bold tracking-tight text-indigo-200 italic max-w-2xl"
+        >
           "{@tagline}"
         </p>
         <p :if={@summary} class="text-sm md:text-base text-slate-300 leading-relaxed">{@summary}</p>
@@ -221,7 +234,10 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
   defp map_section(assigns) do
     ~H"""
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl text-white" id="trip-map-block">
+    <div
+      class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl text-white"
+      id="trip-map-block"
+    >
       <div class="p-4 bg-slate-950/60 border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h3 class="font-extrabold text-sm text-slate-100 flex items-center gap-2">
@@ -272,7 +288,14 @@ defmodule TripPlannerIaWeb.Components.TripView do
                 <stop offset="100%" stop-color="#10b981" stop-opacity="0.8" />
               </linearGradient>
             </defs>
-            <path :if={@routes_path != ""} d={@routes_path} fill="none" stroke="url(#route-gradient)" stroke-width="2.5" stroke-dasharray="6,5" />
+            <path
+              :if={@routes_path != ""}
+              d={@routes_path}
+              fill="none"
+              stroke="url(#route-gradient)"
+              stroke-width="2.5"
+              stroke-dasharray="6,5"
+            />
           </svg>
 
           <%= for point <- @filtered_points do %>
@@ -284,26 +307,39 @@ defmodule TripPlannerIaWeb.Components.TripView do
               class={[
                 "absolute -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all cursor-pointer shadow-lg z-20",
                 map_point_color(point.time_slot),
-                @selected_point && @selected_point.id == point.id && "ring-4 ring-amber-500 scale-125 z-30"
+                @selected_point && @selected_point.id == point.id &&
+                  "ring-4 ring-amber-500 scale-125 z-30"
               ]}
             >
               <span class="text-[8px] font-bold">{slot_emoji(point.time_slot)}</span>
             </button>
           <% end %>
 
-          <div :if={@selected_point} class="absolute bottom-4 right-4 left-4 md:left-auto md:w-80 bg-slate-900/95 border border-slate-800 p-4 rounded-2xl shadow-2xl z-30 backdrop-blur">
+          <div
+            :if={@selected_point}
+            class="absolute bottom-4 right-4 left-4 md:left-auto md:w-80 bg-slate-900/95 border border-slate-800 p-4 rounded-2xl shadow-2xl z-30 backdrop-blur"
+          >
             <div class="flex justify-between items-start border-b border-slate-800 pb-2 mb-2.5">
               <div>
                 <span class="text-[9px] uppercase tracking-wider font-extrabold text-indigo-400">
-                  {I18n.t(@locale, "day")} {@selected_point.day_number} • {slot_label(@locale, @selected_point.time_slot)}
+                  {I18n.t(@locale, "day")} {@selected_point.day_number} • {slot_label(
+                    @locale,
+                    @selected_point.time_slot
+                  )}
                 </span>
                 <h4 class="font-extrabold text-xs text-slate-100 mt-1">{@selected_point.title}</h4>
               </div>
-              <button type="button" phx-click="clear_map_point" class="text-slate-400 hover:text-slate-100">
+              <button
+                type="button"
+                phx-click="clear_map_point"
+                class="text-slate-400 hover:text-slate-100"
+              >
                 <.icon name="hero-x-mark" class="size-3" />
               </button>
             </div>
-            <p class="text-[11px] text-slate-300 leading-relaxed line-clamp-3">{@selected_point.description}</p>
+            <p class="text-[11px] text-slate-300 leading-relaxed line-clamp-3">
+              {@selected_point.description}
+            </p>
             <div class="mt-3 pt-2.5 border-t border-slate-800 text-[10px] text-slate-400 flex justify-between font-mono">
               <span>{I18n.t(@locale, "trip.costs")}: {@selected_point.cost}</span>
               <span>{@selected_point.duration}</span>
@@ -335,8 +371,12 @@ defmodule TripPlannerIaWeb.Components.TripView do
                 ]}
               >
                 <div class="flex justify-between items-center">
-                  <span class="font-mono text-[9px] text-slate-500">{I18n.t(@locale, "day")} {point.day_number}</span>
-                  <span class="text-[8px] font-bold uppercase">{slot_label(@locale, point.time_slot)}</span>
+                  <span class="font-mono text-[9px] text-slate-500">
+                    {I18n.t(@locale, "day")} {point.day_number}
+                  </span>
+                  <span class="text-[8px] font-bold uppercase">
+                    {slot_label(@locale, point.time_slot)}
+                  </span>
                 </div>
                 <h5 class="font-bold text-slate-100 truncate">{point.title}</h5>
               </button>
@@ -364,7 +404,9 @@ defmodule TripPlannerIaWeb.Components.TripView do
       </p>
 
       <div class="flex items-center gap-4">
-        <span class="text-sm font-medium text-slate-700">{I18n.t(@locale, "trip.travelersCount")}</span>
+        <span class="text-sm font-medium text-slate-700">
+          {I18n.t(@locale, "trip.travelersCount")}
+        </span>
         <input
           type="range"
           min="1"
@@ -374,24 +416,34 @@ defmodule TripPlannerIaWeb.Components.TripView do
           name="count"
           class="w-full max-w-xs accent-indigo-600"
         />
-        <span class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg">{@travelers_count}</span>
+        <span class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg">
+          {@travelers_count}
+        </span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.hotelLine", %{rooms: @budget.double_rooms})}</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.hotelLine", %{rooms: @budget.double_rooms})}
+          </p>
           <p class="text-lg font-black text-slate-800">R$ {format_money(@budget.hotel_group)}</p>
         </div>
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.foodLine", %{count: @travelers_count})}</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.foodLine", %{count: @travelers_count})}
+          </p>
           <p class="text-lg font-black text-slate-800">R$ {format_money(@budget.food_group)}</p>
         </div>
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.transportLine", %{count: @travelers_count})}</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.transportLine", %{count: @travelers_count})}
+          </p>
           <p class="text-lg font-black text-slate-800">R$ {format_money(@budget.transport_group)}</p>
         </div>
         <div class="p-4 rounded-2xl bg-indigo-600 text-white">
-          <p class="text-[10px] uppercase font-bold text-indigo-200">{I18n.t(@locale, "trip.totalReference")}</p>
+          <p class="text-[10px] uppercase font-bold text-indigo-200">
+            {I18n.t(@locale, "trip.totalReference")}
+          </p>
           <p class="text-2xl font-black">R$ {format_money(@budget.total)}</p>
         </div>
       </div>
@@ -427,7 +479,8 @@ defmodule TripPlannerIaWeb.Components.TripView do
             class={[
               "px-3 py-1.5 rounded-lg text-xs font-bold border cursor-pointer transition-all",
               @climate_month_index == index && "bg-indigo-600 text-white border-indigo-600",
-              @climate_month_index != index && "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"
+              @climate_month_index != index &&
+                "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"
             ]}
           >
             {month_label(@locale, month.month)}
@@ -437,21 +490,33 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.tempGoals")}</p>
-          <p class="text-lg font-black text-slate-800">{@climate_month.temp_max}° / {@climate_month.temp_min}°</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.tempGoals")}
+          </p>
+          <p class="text-lg font-black text-slate-800">
+            {@climate_month.temp_max}° / {@climate_month.temp_min}°
+          </p>
         </div>
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.rainChance")}</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.rainChance")}
+          </p>
           <p class="text-lg font-black text-slate-800">{@climate_month.precip}%</p>
         </div>
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <p class="text-[10px] uppercase font-bold text-slate-400">{I18n.t(@locale, "trip.sunHours")}</p>
-          <p class="text-lg font-black text-slate-800">{@climate_month.sun_hours} {I18n.t(@locale, "trip.sunHoursUnit")}</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">
+            {I18n.t(@locale, "trip.sunHours")}
+          </p>
+          <p class="text-lg font-black text-slate-800">
+            {@climate_month.sun_hours} {I18n.t(@locale, "trip.sunHoursUnit")}
+          </p>
         </div>
       </div>
 
       <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100">
-        <p class="text-[10px] uppercase font-bold text-amber-700 mb-1">{I18n.t(@locale, "trip.packingGuide")}</p>
+        <p class="text-[10px] uppercase font-bold text-amber-700 mb-1">
+          {I18n.t(@locale, "trip.packingGuide")}
+        </p>
         <p class="text-sm text-amber-900 leading-relaxed">{@climate_month.recommendation}</p>
       </div>
 
@@ -483,7 +548,9 @@ defmodule TripPlannerIaWeb.Components.TripView do
           <h4 class="font-bold text-sm text-slate-800">
             {I18n.t(@locale, "trip.transitCtaTitle", %{destination: @destination})}
           </h4>
-          <p class="text-xs text-slate-500 max-w-lg mx-auto">{I18n.t(@locale, "trip.transitCtaDesc")}</p>
+          <p class="text-xs text-slate-500 max-w-lg mx-auto">
+            {I18n.t(@locale, "trip.transitCtaDesc")}
+          </p>
           <button
             type="button"
             phx-click="search_transit"
@@ -498,10 +565,15 @@ defmodule TripPlannerIaWeb.Components.TripView do
       <div :if={@transit_loading} class="py-8 text-center space-y-2">
         <div class="w-10 h-10 mx-auto rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin" />
         <p class="text-xs font-bold text-slate-700">{I18n.t(@locale, "trip.transitLoading")}</p>
-        <p class="text-[11px] text-slate-500 max-w-sm mx-auto">{I18n.t(@locale, "trip.transitLoadingDesc")}</p>
+        <p class="text-[11px] text-slate-500 max-w-sm mx-auto">
+          {I18n.t(@locale, "trip.transitLoadingDesc")}
+        </p>
       </div>
 
-      <p :if={@transit_error} class="text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl p-3">
+      <p
+        :if={@transit_error}
+        class="text-xs text-rose-600 bg-rose-50 border border-rose-100 rounded-xl p-3"
+      >
         {@transit_error}
       </p>
 
@@ -525,13 +597,20 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
         <div :if={@active_transit_section} class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
           <h4 class="font-bold text-slate-800 text-sm mb-2">{@active_transit_section.title}</h4>
-          <div class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{@active_transit_section.content}</div>
+          <div class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+            {@active_transit_section.content}
+          </div>
         </div>
 
         <div :if={@transit_data && @transit_data[:sources] != []} class="space-y-2">
           <p class="text-xs font-bold text-slate-700">{I18n.t(@locale, "trip.sourcesTitle")}</p>
           <%= for source <- @transit_data[:sources] do %>
-            <a href={source.url} target="_blank" rel="noopener" class="text-xs text-indigo-600 hover:underline block">
+            <a
+              href={source.url}
+              target="_blank"
+              rel="noopener"
+              class="text-xs text-indigo-600 hover:underline block"
+            >
               {source.title}
             </a>
           <% end %>
@@ -566,7 +645,8 @@ defmodule TripPlannerIaWeb.Components.TripView do
             class={[
               "px-4 py-2 rounded-xl text-sm font-bold border cursor-pointer transition-all",
               @active_day == day["day_number"] && "bg-indigo-600 text-white border-indigo-600",
-              @active_day != day["day_number"] && "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"
+              @active_day != day["day_number"] &&
+                "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"
             ]}
           >
             {I18n.t(@locale, "day")} {day["day_number"]}
@@ -574,7 +654,10 @@ defmodule TripPlannerIaWeb.Components.TripView do
         <% end %>
       </div>
 
-      <div :if={@active_day_plan} class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+      <div
+        :if={@active_day_plan}
+        class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4"
+      >
         <div>
           <h3 class="font-bold text-slate-800 text-lg">
             {I18n.t(@locale, "trip.dayFocus")}: {@active_day_plan["theme"]}
@@ -600,7 +683,9 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
         <% dining = @active_day_plan["dining_spot"] %>
         <div :if={dining} class="p-4 rounded-xl bg-amber-50 border border-amber-100">
-          <p class="text-[10px] uppercase font-bold text-amber-700">{I18n.t(@locale, "trip.diningTitle")}</p>
+          <p class="text-[10px] uppercase font-bold text-amber-700">
+            {I18n.t(@locale, "trip.diningTitle")}
+          </p>
           <h4 class="font-bold text-slate-800">{dining["name"]}</h4>
           <p class="text-xs text-slate-600">{dining["type"]} • {dining["price_level"]}</p>
           <p class="text-xs text-slate-500 mt-1">{dining["description"]}</p>
@@ -611,7 +696,8 @@ defmodule TripPlannerIaWeb.Components.TripView do
   end
 
   defp packing_section(assigns) do
-    checked_count = Enum.count(assigns.packing_items, &Map.get(assigns.checked_packing, &1, false))
+    checked_count =
+      Enum.count(assigns.packing_items, &Map.get(assigns.checked_packing, &1, false))
 
     assigns = assign(assigns, :checked_count, checked_count)
 
@@ -623,7 +709,10 @@ defmodule TripPlannerIaWeb.Components.TripView do
       </h2>
       <p class="text-xs text-slate-500">{I18n.t(@locale, "trip.packingDesc")}</p>
       <p class="text-[10px] font-bold text-indigo-600">
-        {I18n.t(@locale, "trip.packingProgress")} {I18n.t(@locale, "trip.packingCount", %{checked: @checked_count, total: length(@packing_items)})}
+        {I18n.t(@locale, "trip.packingProgress")} {I18n.t(@locale, "trip.packingCount", %{
+          checked: @checked_count,
+          total: length(@packing_items)
+        })}
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <%= for item <- @packing_items do %>
@@ -651,7 +740,10 @@ defmodule TripPlannerIaWeb.Components.TripView do
 
   defp tips_section(assigns) do
     ~H"""
-    <div :if={@tips != []} class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
+    <div
+      :if={@tips != []}
+      class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4"
+    >
       <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
         <.icon name="hero-light-bulb" class="size-5 text-amber-500" />
         {I18n.t(@locale, "trip.tipsTitle")}
@@ -677,16 +769,27 @@ defmodule TripPlannerIaWeb.Components.TripView do
           <h2 class="text-lg font-bold text-slate-900">{I18n.t(@locale, "trip.shareModalTitle")}</h2>
           <p class="text-xs text-slate-500 mt-1">{I18n.t(@locale, "trip.shareModalDesc")}</p>
           <div class="mt-4 space-y-3">
-            <input type="text" readonly value={@share_url} class="w-full text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 font-mono" />
+            <input
+              type="text"
+              readonly
+              value={@share_url}
+              class="w-full text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 font-mono"
+            />
             <button
               type="button"
               phx-click="copy_share_link"
               class="w-full py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold cursor-pointer"
             >
-              {if @share_copied, do: I18n.t(@locale, "common.copied"), else: I18n.t(@locale, "common.copy")}
+              {if @share_copied,
+                do: I18n.t(@locale, "common.copied"),
+                else: I18n.t(@locale, "common.copy")}
             </button>
           </div>
-          <button type="button" phx-click="close_share" class="mt-4 text-xs text-slate-500 hover:text-slate-700 cursor-pointer">
+          <button
+            type="button"
+            phx-click="close_share"
+            class="mt-4 text-xs text-slate-500 hover:text-slate-700 cursor-pointer"
+          >
             {I18n.t(@locale, "common.cancel")}
           </button>
         </div>
@@ -701,9 +804,13 @@ defmodule TripPlannerIaWeb.Components.TripView do
       <div class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm" phx-click="close_calendar" />
       <div class="flex min-h-screen items-center justify-center p-4">
         <div class="relative w-full max-w-md bg-white rounded-3xl border border-slate-100 shadow-2xl p-6 z-10">
-          <h2 class="text-lg font-bold text-slate-900">{I18n.t(@locale, "trip.calendarModalTitle")}</h2>
+          <h2 class="text-lg font-bold text-slate-900">
+            {I18n.t(@locale, "trip.calendarModalTitle")}
+          </h2>
           <p class="text-xs text-slate-500 mt-1">{I18n.t(@locale, "trip.calendarModalDesc")}</p>
-          <label class="block mt-4 text-sm font-medium text-slate-700">{I18n.t(@locale, "trip.startDate")}</label>
+          <label class="block mt-4 text-sm font-medium text-slate-700">
+            {I18n.t(@locale, "trip.startDate")}
+          </label>
           <input
             type="date"
             name="start_date"
@@ -718,7 +825,11 @@ defmodule TripPlannerIaWeb.Components.TripView do
           >
             {I18n.t(@locale, "trip.downloadIcs")}
           </button>
-          <button type="button" phx-click="close_calendar" class="mt-3 text-xs text-slate-500 cursor-pointer">
+          <button
+            type="button"
+            phx-click="close_calendar"
+            class="mt-3 text-xs text-slate-500 cursor-pointer"
+          >
             {I18n.t(@locale, "common.cancel")}
           </button>
         </div>
@@ -767,15 +878,18 @@ defmodule TripPlannerIaWeb.Components.TripView do
   defp slot_label(_locale, slot), do: slot
 
   defp month_label(locale, month) do
-    I18n.t(locale, "months.#{month}", %{}) |> then(fn
+    I18n.t(locale, "months.#{month}", %{})
+    |> then(fn
       "months." <> _ -> month
       label -> label
     end)
   end
 
   defp transit_section_label(_locale, %{key: :other, title: title}), do: title
+
   defp transit_section_label(locale, %{key: key}) do
-    I18n.t(locale, "trip.transitSections.#{key}", %{}) |> then(fn
+    I18n.t(locale, "trip.transitSections.#{key}", %{})
+    |> then(fn
       "trip.transitSections." <> _ -> Atom.to_string(key)
       label -> label
     end)

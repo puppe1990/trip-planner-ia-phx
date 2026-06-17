@@ -20,9 +20,24 @@ defmodule TripPlannerIa.Fixtures do
         %{
           day_number: 1,
           theme: "Centro histórico",
-          morning: %{title: "Alfama", description: "Bairro antigo", cost: "Grátis", duration: "3h"},
-          afternoon: %{title: "Castelo", description: "Vista panorâmica", cost: "R$ 30", duration: "2h"},
-          evening: %{title: "Fado", description: "Música tradicional", cost: "R$ 80", duration: "2h"},
+          morning: %{
+            title: "Alfama",
+            description: "Bairro antigo",
+            cost: "Grátis",
+            duration: "3h"
+          },
+          afternoon: %{
+            title: "Castelo",
+            description: "Vista panorâmica",
+            cost: "R$ 30",
+            duration: "2h"
+          },
+          evening: %{
+            title: "Fado",
+            description: "Música tradicional",
+            cost: "R$ 80",
+            duration: "2h"
+          },
           dining_spot: %{
             name: "Tasca",
             type: "Portuguesa",
@@ -49,18 +64,48 @@ defmodule TripPlannerIa.Fixtures do
         %{
           day_number: 1,
           theme: "Templos",
-          morning: %{title: "Fushimi Inari", description: "Torii gates", cost: "Grátis", duration: "3h"},
-          afternoon: %{title: "Arashiyama", description: "Bamboo grove", cost: "R$ 20", duration: "4h"},
-          evening: %{title: "Gion", description: "Geisha district", cost: "Grátis", duration: "2h"},
-          dining_spot: %{name: "Ramen Ya", type: "Japonesa", price_level: "R$ Barato", description: "Tonkotsu"}
+          morning: %{
+            title: "Fushimi Inari",
+            description: "Torii gates",
+            cost: "Grátis",
+            duration: "3h"
+          },
+          afternoon: %{
+            title: "Arashiyama",
+            description: "Bamboo grove",
+            cost: "R$ 20",
+            duration: "4h"
+          },
+          evening: %{
+            title: "Gion",
+            description: "Geisha district",
+            cost: "Grátis",
+            duration: "2h"
+          },
+          dining_spot: %{
+            name: "Ramen Ya",
+            type: "Japonesa",
+            price_level: "R$ Barato",
+            description: "Tonkotsu"
+          }
         },
         %{
           day_number: 2,
           theme: "Cidade",
           morning: %{title: "Nijo Castle", description: "Castelo", cost: "R$ 40", duration: "2h"},
-          afternoon: %{title: "Nishiki Market", description: "Mercado", cost: "R$ 30", duration: "3h"},
+          afternoon: %{
+            title: "Nishiki Market",
+            description: "Mercado",
+            cost: "R$ 30",
+            duration: "3h"
+          },
           evening: %{title: "Pontocho", description: "Ruelas", cost: "R$ 60", duration: "2h"},
-          dining_spot: %{name: "Izakaya", type: "Japonesa", price_level: "R$ Moderado", description: "Sake"}
+          dining_spot: %{
+            name: "Izakaya",
+            type: "Japonesa",
+            price_level: "R$ Moderado",
+            description: "Sake"
+          }
         }
       ],
       tips: []

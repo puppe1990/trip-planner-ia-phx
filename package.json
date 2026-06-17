@@ -1,0 +1,28 @@
+{
+  "name": "trip-planner-ia-phx",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "mix credo suggest --min-priority higher",
+    "test": "mix test",
+    "ci:elixir": "mix format --check-formatted && mix credo suggest --min-priority higher && mix test",
+    "ci": "npm run format:check && npm run ci:elixir",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.4",
+    "prettier-plugin-tailwindcss": "^0.7.2"
+  },
+  "lint-staged": {
+    "*.{ex,exs}": [
+      "mix format"
+    ],
+    "*.{js,css,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

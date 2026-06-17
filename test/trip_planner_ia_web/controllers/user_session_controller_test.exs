@@ -193,7 +193,8 @@ defmodule TripPlannerIaWeb.UserSessionControllerTest do
           "user" => %{"token" => "invalid"}
         })
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "The link is invalid or it has expired."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
+               "The link is invalid or it has expired."
     end
   end
 
