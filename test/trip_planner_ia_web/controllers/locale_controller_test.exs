@@ -24,9 +24,7 @@ defmodule TripPlannerIaWeb.LocaleControllerTest do
     conn = get(conn, ~p"/locale/en?return_to=/")
 
     assert {:ok, _view, html} =
-             conn
-             |> recycle()
-             |> live(~p"/")
+             live(conn, ~p"/")
 
     assert html =~ "TripPlanner"
   end

@@ -6,7 +6,7 @@ config :bcrypt_elixir, :log_rounds, 1
 config :trip_planner_ia, TripPlannerIa.Repo,
   adapter: Ecto.Adapters.LibSql,
   database: "priv/data/trip_planner_ia_test#{System.get_env("MIX_TEST_PARTITION")}.db",
-  pool_size: 5
+  pool_size: 1
 
 config :trip_planner_ia, TripPlannerIaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
