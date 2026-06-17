@@ -1,6 +1,9 @@
+
 # TripPlanner IA (Phoenix + LiveView)
 
-Reescrita em Phoenix 1.8 + LiveView do planejador de viagens com IA.
+APP em Phoenix 1.8 + LiveView do planejador de viagens com IA.
+
+<img width="800" height="447" alt="Screen Recording 2026-06-17 at 19 06 25" src="https://github.com/user-attachments/assets/bf63cffa-9f3c-435d-b6c0-7e01589f1dfe" />
 
 ## Stack
 
