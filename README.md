@@ -27,14 +27,14 @@ Acesse [http://localhost:4000](http://localhost:4000).
 
 Veja `.env.example`. Principais:
 
-| Variável | Descrição |
-|----------|-----------|
-| `SECRET_KEY_BASE` | Sessão Phoenix |
-| `GEMINI_API_KEY` | API Gemini |
-| `NVIDIA_API_KEY` | API NVIDIA NIM |
-| `TURSO_DATABASE_URL` | `libsql://...` (prod) ou path local |
-| `TURSO_AUTH_TOKEN` | Token Turso |
-| `TRIP_PLANNER_MULTI_STEP` | `true` / `false` |
+| Variável                  | Descrição                           |
+| ------------------------- | ----------------------------------- |
+| `SECRET_KEY_BASE`         | Sessão Phoenix                      |
+| `GEMINI_API_KEY`          | API Gemini                          |
+| `NVIDIA_API_KEY`          | API NVIDIA NIM                      |
+| `TURSO_DATABASE_URL`      | `libsql://...` (prod) ou path local |
+| `TURSO_AUTH_TOKEN`        | Token Turso                         |
+| `TRIP_PLANNER_MULTI_STEP` | `true` / `false`                    |
 
 ## Testes
 
@@ -44,9 +44,9 @@ mix test
 
 ## Scripts
 
-| Comando | Descrição |
-|---------|-----------|
-| `mix phx.server` | Dev server |
-| `mix test` | Testes ExUnit |
-| `mix precommit` | format + test |
+| Comando                 | Descrição                      |
+| ----------------------- | ------------------------------ |
+| `mix phx.server`        | Dev server                     |
+| `mix test`              | Testes ExUnit                  |
+| `mix precommit`         | format + test                  |
 | `./scripts/copy_env.sh` | Copia keys do projeto original |

@@ -43,9 +43,7 @@ defmodule TripPlannerIa.Trips do
   Returns `true` when a trip was deleted, otherwise `false`.
   """
   def delete_trip(user_id, trip_id) do
-    case Repo.delete_all(
-           from(t in SavedTrip, where: t.id == ^trip_id and t.user_id == ^user_id)
-         ) do
+    case Repo.delete_all(from(t in SavedTrip, where: t.id == ^trip_id and t.user_id == ^user_id)) do
       {1, _} -> true
       _ -> false
     end

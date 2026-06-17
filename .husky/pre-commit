@@ -1,0 +1,4 @@
+npx lint-staged
+mix format --check-formatted
+mix credo suggest --min-priority higher
+mix test

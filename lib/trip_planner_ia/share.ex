@@ -29,8 +29,9 @@ defmodule TripPlannerIa.Share do
 
   def parse_share_hash(_), do: nil
 
-  defp valid_plan?(%{"destination" => dest, "days" => days}) when is_binary(dest) and is_list(days),
-    do: true
+  defp valid_plan?(%{"destination" => dest, "days" => days})
+       when is_binary(dest) and is_list(days),
+       do: true
 
   defp valid_plan?(_), do: false
 

@@ -14,10 +14,30 @@ defmodule TripPlannerIa.IcsExportTest do
           %{
             day_number: 1,
             theme: "Gaudí",
-            morning: %{title: "Sagrada Família", description: "Basílica icônica", cost: "R$ 100", duration: "3h"},
-            afternoon: %{title: "Park Güell", description: "Parque colorido", cost: "R$ 50", duration: "2h"},
-            evening: %{title: "Las Ramblas", description: "Passeio noturno", cost: "Grátis", duration: "2h"},
-            dining_spot: %{name: "Tapas Bar", type: "Espanhola", price_level: "R$ Moderado", description: "Paella"}
+            morning: %{
+              title: "Sagrada Família",
+              description: "Basílica icônica",
+              cost: "R$ 100",
+              duration: "3h"
+            },
+            afternoon: %{
+              title: "Park Güell",
+              description: "Parque colorido",
+              cost: "R$ 50",
+              duration: "2h"
+            },
+            evening: %{
+              title: "Las Ramblas",
+              description: "Passeio noturno",
+              cost: "Grátis",
+              duration: "2h"
+            },
+            dining_spot: %{
+              name: "Tapas Bar",
+              type: "Espanhola",
+              price_level: "R$ Moderado",
+              description: "Paella"
+            }
           }
         ]
       })

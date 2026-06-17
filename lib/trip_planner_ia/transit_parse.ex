@@ -66,44 +66,44 @@ defmodule TripPlannerIa.TransitParse do
   defp detect_section_key(lowered_title) do
     cond do
       String.contains?(lowered_title, "corrida") or
-          String.contains?(lowered_title, "táxi") or
-          String.contains?(lowered_title, "taxi") or
-          String.contains?(lowered_title, "car") or
+        String.contains?(lowered_title, "táxi") or
+        String.contains?(lowered_title, "taxi") or
+        String.contains?(lowered_title, "car") or
           String.contains?(lowered_title, "ride") ->
         :ride_apps
 
       String.contains?(lowered_title, "rota") or
-          String.contains?(lowered_title, "navegação") or
-          String.contains?(lowered_title, "navigation") or
-          String.contains?(lowered_title, "map") or
+        String.contains?(lowered_title, "navegação") or
+        String.contains?(lowered_title, "navigation") or
+        String.contains?(lowered_title, "map") or
           String.contains?(lowered_title, "route") ->
         :routes
 
       String.contains?(lowered_title, "metrô") or
-          String.contains?(lowered_title, "metro") or
-          String.contains?(lowered_title, "trem") or
-          String.contains?(lowered_title, "train") or
+        String.contains?(lowered_title, "metro") or
+        String.contains?(lowered_title, "trem") or
+        String.contains?(lowered_title, "train") or
           String.contains?(lowered_title, "rail") ->
         :metro
 
       String.contains?(lowered_title, "ônibus") or
-          String.contains?(lowered_title, "onibus") or
-          String.contains?(lowered_title, "bus") or
-          String.contains?(lowered_title, "barco") or
+        String.contains?(lowered_title, "onibus") or
+        String.contains?(lowered_title, "bus") or
+        String.contains?(lowered_title, "barco") or
           String.contains?(lowered_title, "ferry") ->
         :buses
 
       String.contains?(lowered_title, "tarifa") or
-          String.contains?(lowered_title, "pagamento") or
-          String.contains?(lowered_title, "fare") or
-          String.contains?(lowered_title, "payment") or
+        String.contains?(lowered_title, "pagamento") or
+        String.contains?(lowered_title, "fare") or
+        String.contains?(lowered_title, "payment") or
           String.contains?(lowered_title, "card") ->
         :fares
 
       String.contains?(lowered_title, "dica") or
-          String.contains?(lowered_title, "conselho") or
-          String.contains?(lowered_title, "tip") or
-          String.contains?(lowered_title, "general") or
+        String.contains?(lowered_title, "conselho") or
+        String.contains?(lowered_title, "tip") or
+        String.contains?(lowered_title, "general") or
           String.contains?(lowered_title, "mobilidade") ->
         :tips
 

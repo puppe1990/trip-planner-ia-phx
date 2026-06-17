@@ -106,7 +106,10 @@ defmodule TripPlannerIa.AiConfigTest do
       System.put_env("GEMINI_API_KEY", "key")
       System.put_env("NVIDIA_API_KEY", "key")
 
-      assert AiConfig.resolve_ai_config(%{provider_id: "nvidia-nim", model: "meta/llama-3.1-8b-instruct"}).model ==
+      assert AiConfig.resolve_ai_config(%{
+               provider_id: "nvidia-nim",
+               model: "meta/llama-3.1-8b-instruct"
+             }).model ==
                "meta/llama-3.1-8b-instruct"
     end
 

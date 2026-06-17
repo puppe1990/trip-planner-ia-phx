@@ -35,7 +35,7 @@ defmodule TripPlannerIa.BudgetTest do
       result = Budget.calculate_group_budget(plan, 1)
 
       assert result.double_rooms == 1
-      assert result.hotel_group == 300 * 1 * 4
+      assert result.hotel_group == 300 * 4
     end
   end
 end

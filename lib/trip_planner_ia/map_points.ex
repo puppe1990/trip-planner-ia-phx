@@ -34,8 +34,7 @@ defmodule TripPlannerIa.MapPoints do
             time_slot: slot,
             title: activity.title,
             description: activity.description,
-            lat:
-              base_lat + 0.045 * (day.day_number - 1) + lat_off + (rem(h, 100) - 50) / 1500,
+            lat: base_lat + 0.045 * (day.day_number - 1) + lat_off + (rem(h, 100) - 50) / 1500,
             lng:
               base_lng + 0.055 * (day.day_number - 1) + lng_off +
                 (rem(Bitwise.bsr(h, 2), 100) - 50) / 1500,

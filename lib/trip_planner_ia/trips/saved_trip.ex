@@ -21,7 +21,14 @@ defmodule TripPlannerIa.Trips.SavedTrip do
 
   def changeset(saved_trip, attrs) do
     saved_trip
-    |> cast(attrs, [:destination, :duration_days, :tagline, :plan_json, :search_params_json, :inserted_at])
+    |> cast(attrs, [
+      :destination,
+      :duration_days,
+      :tagline,
+      :plan_json,
+      :search_params_json,
+      :inserted_at
+    ])
     |> validate_required([:destination, :duration_days, :plan_json, :user_id])
     |> unique_constraint([:user_id, :destination, :duration_days],
       name: :saved_trips_user_dest_duration

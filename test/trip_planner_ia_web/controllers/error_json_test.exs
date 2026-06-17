@@ -1,5 +1,5 @@
 defmodule TripPlannerIaWeb.ErrorJSONTest do
-  use TripPlannerIaWeb.ConnCase, async: true
+  use TripPlannerIaWeb.ConnCase
 
   test "renders 404" do
     assert TripPlannerIaWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}

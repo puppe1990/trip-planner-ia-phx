@@ -67,7 +67,10 @@ defmodule TripPlannerIa.Llm.NvidiaNimProvider do
     ]
   end
 
-  defp call_chat_completions(%__MODULE__{api_key: api_key, model: model, req_options: req_options}, body) do
+  defp call_chat_completions(
+         %__MODULE__{api_key: api_key, model: model, req_options: req_options},
+         body
+       ) do
     unless AiConfig.nvidia_model_hosted?(model) do
       raise "Model \"#{model}\" is not available on the hosted NVIDIA NIM API. Choose a supported model from the list."
     end
@@ -81,7 +84,8 @@ defmodule TripPlannerIa.Llm.NvidiaNimProvider do
       ] ++ req_options
 
     case Req.post(options) do
-      {:ok, %{status: status, body: %{"choices" => [%{"message" => %{"content" => content}} | _]}}}
+      {:ok,
+       %{status: status, body: %{"choices" => [%{"message" => %{"content" => content}} | _]}}}
       when status in 200..299 and is_binary(content) and content != "" ->
         content
 

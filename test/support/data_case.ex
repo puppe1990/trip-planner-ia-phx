@@ -7,6 +7,8 @@ defmodule TripPlannerIa.DataCase do
 
   using do
     quote do
+      use ExUnit.Case, async: false
+
       alias TripPlannerIa.Repo
 
       import Ecto

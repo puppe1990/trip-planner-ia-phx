@@ -124,7 +124,10 @@ defmodule TripPlannerIa.TripGenerationTest do
 
       assert result == assembled_plan()
 
-      progress = :ets.tab2list(progress_calls) |> Enum.sort_by(fn {index, _} -> index end) |> Enum.map(&elem(&1, 1))
+      progress =
+        :ets.tab2list(progress_calls)
+        |> Enum.sort_by(fn {index, _} -> index end)
+        |> Enum.map(&elem(&1, 1))
 
       assert progress == [
                %{phase: "outline"},

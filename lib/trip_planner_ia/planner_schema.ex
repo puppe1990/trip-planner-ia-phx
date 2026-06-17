@@ -90,7 +90,8 @@ defmodule TripPlannerIa.PlannerSchema do
       try do
         extract_json_payload(raw_json)
       rescue
-        _ -> raise "Planner response is not valid JSON."
+        _exception ->
+          reraise "Planner response is not valid JSON.", __STACKTRACE__
       end
 
     normalize_planner_payload(parsed, context)

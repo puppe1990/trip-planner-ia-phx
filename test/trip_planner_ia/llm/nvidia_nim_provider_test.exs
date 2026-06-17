@@ -32,9 +32,7 @@ defmodule TripPlannerIa.Llm.NvidiaNimProviderTest do
       end)
 
       provider =
-        NvidiaNimProvider.create("nvapi-test-key", @model,
-          req_options: [plug: {Req.Test, @stub}]
-        )
+        NvidiaNimProvider.create("nvapi-test-key", @model, req_options: [plug: {Req.Test, @stub}])
 
       text =
         provider.generate_text.(%{
@@ -60,9 +58,7 @@ defmodule TripPlannerIa.Llm.NvidiaNimProviderTest do
       end)
 
       provider =
-        NvidiaNimProvider.create("nvapi-test-key", @model,
-          req_options: [plug: {Req.Test, @stub}]
-        )
+        NvidiaNimProvider.create("nvapi-test-key", @model, req_options: [plug: {Req.Test, @stub}])
 
       json =
         provider.generate_json.(%{
@@ -88,9 +84,7 @@ defmodule TripPlannerIa.Llm.NvidiaNimProviderTest do
       end)
 
       provider =
-        NvidiaNimProvider.create("bad-key", @model,
-          req_options: [plug: {Req.Test, @stub}]
-        )
+        NvidiaNimProvider.create("bad-key", @model, req_options: [plug: {Req.Test, @stub}])
 
       assert_raise RuntimeError, ~r/NVIDIA NIM request failed \(401\): Unauthorized/, fn ->
         provider.generate_text.(%{system: "sys", prompt: "prompt"})
@@ -103,9 +97,7 @@ defmodule TripPlannerIa.Llm.NvidiaNimProviderTest do
       end)
 
       provider =
-        NvidiaNimProvider.create("nvapi-test-key", @model,
-          req_options: [plug: {Req.Test, @stub}]
-        )
+        NvidiaNimProvider.create("nvapi-test-key", @model, req_options: [plug: {Req.Test, @stub}])
 
       assert_raise RuntimeError,
                    ~r/Model "#{@model}" is not available on the hosted API/,

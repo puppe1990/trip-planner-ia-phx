@@ -102,8 +102,11 @@ defmodule TripPlannerIaWeb.HomeLive do
 
         share_data ->
           case TripPlannerIa.Share.decode_shared_trip_plan(share_data) do
-            nil -> put_flash(socket, :error, I18n.t(socket.assigns.locale, "errors.invalidShareLink"))
-            plan -> show_shared_plan(socket, TripPlan.from_atoms(plan))
+            nil ->
+              put_flash(socket, :error, I18n.t(socket.assigns.locale, "errors.invalidShareLink"))
+
+            plan ->
+              show_shared_plan(socket, TripPlan.from_atoms(plan))
           end
       end
 
@@ -285,7 +288,9 @@ defmodule TripPlannerIaWeb.HomeLive do
 
   def handle_event("toggle_packing", %{"item" => item}, socket) do
     checked = Map.get(socket.assigns.checked_packing, item, false)
-    {:noreply, assign(socket, :checked_packing, Map.put(socket.assigns.checked_packing, item, !checked))}
+
+    {:noreply,
+     assign(socket, :checked_packing, Map.put(socket.assigns.checked_packing, item, !checked))}
   end
 
   def handle_event("open_share", _params, socket) do
@@ -297,7 +302,9 @@ defmodule TripPlannerIaWeb.HomeLive do
   end
 
   def handle_event("copy_share_link", _params, socket) do
-    {:noreply, push_event(socket, "copy_to_clipboard", %{text: share_url(socket)}) |> assign(:share_copied, true)}
+    {:noreply,
+     push_event(socket, "copy_to_clipboard", %{text: share_url(socket)})
+     |> assign(:share_copied, true)}
   end
 
   def handle_event("open_calendar", _params, socket) do
@@ -322,7 +329,8 @@ defmodule TripPlannerIaWeb.HomeLive do
 
     case TripPlannerIa.IcsExport.generate(plan, socket.assigns.start_date) do
       nil ->
-        {:noreply, put_flash(socket, :error, I18n.t(socket.assigns.locale, "errors.genericError"))}
+        {:noreply,
+         put_flash(socket, :error, I18n.t(socket.assigns.locale, "errors.genericError"))}
 
       ics ->
         dest =
@@ -606,12 +614,21 @@ defmodule TripPlannerIaWeb.HomeLive do
         "food_average_day" => "R$ 80 - R$ 120/dia",
         "transport_average_day" => "R$ 40 - R$ 60/dia"
       },
-      "packing_essentials" => ["Documentos", "Protetor solar", "Roupas confortáveis", "Carregador"],
-      "weather_expected" => Map.get(params, :season) || Map.get(params, "season") || "Clima agradável",
+      "packing_essentials" => [
+        "Documentos",
+        "Protetor solar",
+        "Roupas confortáveis",
+        "Carregador"
+      ],
+      "weather_expected" =>
+        Map.get(params, :season) || Map.get(params, "season") || "Clima agradável",
       "days" => days,
       "tips" => [
         %{"category" => "Transporte", "text" => "Use transporte público quando possível."},
-        %{"category" => "Cultura", "text" => "Respeite costumes locais e horários de funcionamento."}
+        %{
+          "category" => "Cultura",
+          "text" => "Respeite costumes locais e horários de funcionamento."
+        }
       ],
       "created_at" => DateTime.utc_now() |> DateTime.to_iso8601(),
       "budget_preference" => Map.get(params, :budget) || Map.get(params, "budget"),
@@ -906,7 +923,9 @@ defmodule TripPlannerIaWeb.HomeLive do
                     "border-slate-100 bg-slate-50/50 hover:bg-slate-50"
                 ]}
               >
-                <span class="font-bold text-slate-800 text-sm">{I18n.t(@locale, option.label_key)}</span>
+                <span class="font-bold text-slate-800 text-sm">
+                  {I18n.t(@locale, option.label_key)}
+                </span>
               </button>
             <% end %>
           </div>
@@ -1035,7 +1054,10 @@ defmodule TripPlannerIaWeb.HomeLive do
         </div>
 
         <div :if={@saved_trips != []} class="relative w-full sm:w-64">
-          <.icon name="hero-magnifying-glass" class="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <.icon
+            name="hero-magnifying-glass"
+            class="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"
+          />
           <input
             type="text"
             name="search"
@@ -1153,5 +1175,4 @@ defmodule TripPlannerIaWeb.HomeLive do
     </div>
     """
   end
-
 end

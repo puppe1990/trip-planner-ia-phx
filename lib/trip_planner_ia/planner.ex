@@ -121,9 +121,7 @@ defmodule TripPlannerIa.Planner do
     schema_instruction = PlannerJsonInstructions.build_planner_tips_schema_instruction()
 
     day_themes =
-      days
-      |> Enum.map(fn day -> "Day #{day.day_number}: #{day.theme}" end)
-      |> Enum.join("\n")
+      Enum.map_join(days, "\n", fn day -> "Day #{day.day_number}: #{day.theme}" end)
 
     prompt =
       """
