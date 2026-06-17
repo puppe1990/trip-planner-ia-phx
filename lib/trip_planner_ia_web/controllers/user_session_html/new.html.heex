@@ -1,0 +1,133 @@
+<div class="min-h-screen flex items-center justify-center p-6 bg-slate-50/50 relative overflow-hidden">
+  <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60" />
+  <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-50 rounded-full blur-[120px] opacity-40" />
+
+  <div class="max-w-md w-full relative z-10 space-y-4">
+    <div class="flex justify-end">
+      <TripPlannerIaWeb.Components.LanguageSwitcher.language_switcher
+        locale={@locale || "pt-BR"}
+        return_to={~p"/users/log-in"}
+      />
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl shadow-slate-100/40 border border-slate-100 overflow-hidden">
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-10 text-center">
+        <TripPlannerIaWeb.Components.Logo.logo size={:md} class="mx-auto mb-4" />
+        <h1 class="text-2xl font-black text-white tracking-tight">
+          {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "app_name")}
+          <span class="text-xs bg-indigo-500/25 border border-indigo-400/20 text-indigo-200 py-0.5 px-2 rounded-full font-bold">
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "ai_badge")}
+          </span>
+        </h1>
+        <p class="text-xs text-slate-400 mt-2">
+          {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "tagline")}
+        </p>
+      </div>
+
+      <div class="p-8 space-y-6">
+        <p :if={@current_scope} class="p-4 bg-amber-50 border border-amber-100 text-amber-900 rounded-2xl text-xs text-center">
+          You need to reauthenticate to perform sensitive actions on your account.
+        </p>
+
+        <div class="text-center space-y-1">
+          <h2 class="text-xl font-bold text-slate-800">
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.login_title")}
+          </h2>
+          <p class="text-xs text-slate-500">
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.login_subtitle")}
+          </p>
+        </div>
+
+        <div :if={local_mail_adapter?()} class="p-4 bg-sky-50 border border-sky-100 text-sky-800 rounded-2xl text-xs">
+          <p>You are running the local mail adapter.</p>
+          <p>
+            To see sent emails, visit <.link href="/dev/mailbox" class="underline">the mailbox page</.link>.
+          </p>
+        </div>
+
+        <.form :let={f} for={@form} as={:user} id="login_form_magic" action={~p"/users/log-in"} class="space-y-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-700">
+              {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.email")}
+            </label>
+            <input
+              readonly={!!@current_scope}
+              name={f[:email].name}
+              id={f[:email].id}
+              value={f[:email].value}
+              type="email"
+              autocomplete="username"
+              spellcheck="false"
+              required
+              placeholder="seu@email.com"
+              phx-mounted={JS.focus()}
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+            />
+          </div>
+          <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all">
+            Log in with email →
+          </button>
+        </.form>
+
+        <div class="flex items-center gap-3 text-xs text-slate-400">
+          <div class="flex-1 border-t border-slate-100" />
+          <span>or</span>
+          <div class="flex-1 border-t border-slate-100" />
+        </div>
+
+        <.form :let={f} for={@form} as={:user} id="login_form_password" action={~p"/users/log-in"} class="space-y-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-700">
+              {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.email")}
+            </label>
+            <input
+              readonly={!!@current_scope}
+              name={f[:email].name}
+              id={"#{f[:email].id}_password"}
+              value={f[:email].value}
+              type="email"
+              autocomplete="username"
+              spellcheck="false"
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-700">
+              {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.password")}
+            </label>
+            <input
+              name={f[:password].name}
+              id={f[:password].id}
+              type="password"
+              autocomplete="current-password"
+              spellcheck="false"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+            />
+          </div>
+          <button
+            type="submit"
+            name={@form[:remember_me].name}
+            value="true"
+            class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all"
+          >
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.login")} →
+          </button>
+          <button
+            type="submit"
+            class="w-full py-3 bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-100 rounded-xl font-semibold transition-all"
+          >
+            Log in only this time
+          </button>
+        </.form>
+
+        <p :if={!@current_scope} class="text-center text-xs text-slate-500">
+          {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.no_account")}
+          <.link navigate={~p"/users/register"} class="text-indigo-600 font-semibold hover:underline">
+            {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.signup")}
+          </.link>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
