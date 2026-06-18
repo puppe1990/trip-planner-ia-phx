@@ -6,6 +6,8 @@ defmodule TripPlannerIaWeb.I18n do
       "app_name" => "TripPlanner",
       "ai_badge" => "IA",
       "tagline" => "Seu assistente virtual para roteiros inteligentes",
+      "seo.description" =>
+        "Planeje viagens com IA: roteiros dia a dia, mapa interativo, clima, transporte e lista de mala. Salve e compartilhe seus planos.",
       "saves" => "Salvos",
       "language" => "Idioma",
       "days" => "dias",
@@ -186,6 +188,8 @@ defmodule TripPlannerIaWeb.I18n do
       "app_name" => "TripPlanner",
       "ai_badge" => "AI",
       "tagline" => "Your virtual assistant for smart itineraries",
+      "seo.description" =>
+        "Plan trips with AI: day-by-day itineraries, interactive maps, weather, transit and packing lists. Save and share your plans.",
       "saves" => "Saved",
       "language" => "Language",
       "days" => "days",

@@ -187,7 +187,21 @@ defmodule TripPlannerIaWeb.UserSessionControllerTest do
           "user" => %{"email" => user.email, "password" => "invalid_password"}
         })
 
+      response = html_response(conn, 200)
+
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "E-mail ou senha incorretos."
+      assert response =~ ~s(id="login-error-banner")
+      assert response =~ "E-mail ou senha incorretos."
+    end
+
+    test "logs the user in with mixed-case email", %{conn: conn, user: user} do
+      conn =
+        post(conn, ~p"/users/log-in", %{
+          "user" => %{"email" => String.upcase(user.email), "password" => valid_user_password()}
+        })
+
+      assert redirected_to(conn) == ~p"/"
+      assert get_session(conn, :user_token)
     end
   end
 

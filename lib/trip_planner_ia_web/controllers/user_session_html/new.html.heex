@@ -1,3 +1,5 @@
+<Layouts.flash_group flash={@flash} id="auth-flash-group" />
+
 <div class="min-h-screen flex items-center justify-center p-6 bg-slate-50/50 relative overflow-hidden">
   <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60" />
   <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-50 rounded-full blur-[120px] opacity-40" />
@@ -31,6 +33,15 @@
         >
           {TripPlannerIaWeb.I18n.t(@locale || "pt-BR", "auth.reauth_required")}
         </p>
+
+        <div
+          :if={Phoenix.Flash.get(@flash, :error)}
+          id="login-error-banner"
+          role="alert"
+          class="p-4 bg-rose-50 border border-rose-100 text-rose-900 rounded-2xl text-sm text-center"
+        >
+          {Phoenix.Flash.get(@flash, :error)}
+        </div>
 
         <div class="text-center space-y-1">
           <h2 class="text-xl font-bold text-slate-800">

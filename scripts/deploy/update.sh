@@ -6,7 +6,7 @@ cd "$ROOT"
 
 # Defaults — override with env vars or scripts/deploy/deploy.local.env
 DEPLOY_IP="${DEPLOY_IP:-100.59.80.29}"
-DEPLOY_HOST="${DEPLOY_HOST:-100-59-80-29.sslip.io}"
+DEPLOY_HOST="${DEPLOY_HOST:-trip.gestaobem.com}"
 DEPLOY_SSH_KEY="${DEPLOY_SSH_KEY:-$HOME/.ssh/lightsail-default-key-us-east-1.pem}"
 DEPLOY_USER="${DEPLOY_USER:-ubuntu}"
 LIGHTSAIL_STATIC_IP="${LIGHTSAIL_STATIC_IP:-trip-planner-ip}"

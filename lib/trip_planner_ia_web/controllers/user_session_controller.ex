@@ -13,6 +13,8 @@ defmodule TripPlannerIaWeb.UserSessionController do
 
   def create(conn, %{"user" => %{"email" => email, "password" => password} = user_params})
       when is_binary(password) and password != "" do
+    email = String.downcase(String.trim(email))
+
     if user = Accounts.get_user_by_email_and_password(email, password) do
       conn
       |> put_flash(:info, "Welcome back!")
@@ -28,6 +30,15 @@ defmodule TripPlannerIaWeb.UserSessionController do
   end
 
   def create(conn, %{"user" => user_params}) do
+    user_params =
+      case user_params do
+        %{"email" => email} when is_binary(email) ->
+          Map.put(user_params, "email", String.downcase(String.trim(email)))
+
+        _ ->
+          user_params
+      end
+
     form = Phoenix.Component.to_form(user_params, as: "user")
     locale = conn.assigns[:locale] || "pt-BR"
 
