@@ -65,27 +65,73 @@ defmodule TripPlannerIaWeb.UserAuth do
   Will reissue the session token if it is older than the configured age.
   """
   def fetch_current_scope_for_user(conn, _opts) do
-    with {token, conn} <- ensure_user_token(conn),
-         {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
-      conn
-      |> assign(:current_scope, Scope.for_user(user))
-      |> maybe_reissue_user_session_token(user, token_inserted_at)
+    case resolve_user_session(conn) do
+      {conn, {user, token_inserted_at}} ->
+        conn
+        |> assign(:current_scope, Scope.for_user(user))
+        |> maybe_reissue_user_session_token(user, token_inserted_at)
+
+      {conn, nil} ->
+        assign(conn, :current_scope, Scope.for_user(nil))
+    end
+  end
+
+  defp resolve_user_session(conn) do
+    had_session_token? = get_session(conn, :user_token) != nil
+
+    case ensure_user_token(conn) do
+      {conn, nil} ->
+        {conn, nil}
+
+      {conn, token} ->
+        case Accounts.get_user_by_session_token(token) do
+          {_user, _token_inserted_at} = result ->
+            {conn, result}
+
+          nil when had_session_token? ->
+            fallback_remember_me(conn)
+
+          nil ->
+            {conn, nil}
+        end
+    end
+  end
+
+  defp fallback_remember_me(conn) do
+    conn = fetch_cookies(conn, signed: [@remember_me_cookie])
+
+    if token = conn.cookies[@remember_me_cookie] do
+      user_from_token(conn, token)
     else
-      nil -> assign(conn, :current_scope, Scope.for_user(nil))
+      {conn, nil}
     end
   end
 
   defp ensure_user_token(conn) do
     if token = get_session(conn, :user_token) do
-      {token, conn}
+      {conn, decode_session_token(token)}
     else
-      conn = fetch_cookies(conn, signed: [@remember_me_cookie])
+      remember_me_token_from_cookies(conn)
+    end
+  end
 
-      if token = conn.cookies[@remember_me_cookie] do
-        {token, conn |> put_token_in_session(token) |> put_session(:user_remember_me, true)}
-      else
-        nil
-      end
+  defp remember_me_token_from_cookies(conn) do
+    conn = fetch_cookies(conn, signed: [@remember_me_cookie])
+
+    if token = conn.cookies[@remember_me_cookie] do
+      {conn |> put_token_in_session(token) |> put_session(:user_remember_me, true), token}
+    else
+      {conn, nil}
+    end
+  end
+
+  defp user_from_token(conn, token) do
+    case Accounts.get_user_by_session_token(token) do
+      nil ->
+        {conn, nil}
+
+      {_user, _token_inserted_at} = result ->
+        {conn |> put_token_in_session(token) |> put_session(:user_remember_me, true), result}
     end
   end
 
@@ -167,8 +213,19 @@ defmodule TripPlannerIaWeb.UserAuth do
 
   defp put_token_in_session(conn, token) do
     conn
-    |> put_session(:user_token, token)
+    |> put_session(:user_token, encode_session_token(token))
     |> put_session(:live_socket_id, user_session_topic(token))
+  end
+
+  defp encode_session_token(token) when is_binary(token) do
+    Base.url_encode64(token, padding: false)
+  end
+
+  defp decode_session_token(token) when is_binary(token) do
+    case Base.url_decode64(token, padding: false) do
+      {:ok, decoded} -> decoded
+      :error -> token
+    end
   end
 
   defp user_session_topic(token), do: "users_sessions:#{Base.url_encode64(token)}"
@@ -259,14 +316,29 @@ defmodule TripPlannerIaWeb.UserAuth do
 
       token ->
         case Accounts.get_user_by_session_token(token) do
-          {user, _} -> user
-          nil -> nil
+          {user, _} ->
+            user
+
+          nil ->
+            case remember_me_token(socket) do
+              nil ->
+                nil
+
+              remember_token ->
+                case Accounts.get_user_by_session_token(remember_token) do
+                  {user, _} -> user
+                  nil -> nil
+                end
+            end
         end
     end
   end
 
   defp session_user_token(session, socket) do
-    session["user_token"] || remember_me_token(socket)
+    case session["user_token"] do
+      nil -> remember_me_token(socket)
+      token -> decode_session_token(token)
+    end
   end
 
   defp remember_me_token(socket) do

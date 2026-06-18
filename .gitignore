@@ -22,6 +22,9 @@ erl_crash.dump
 # Temporary files, for example, from tests.
 /tmp/
 
+# Local deploy overrides (IP, domain, SSH key)
+/scripts/deploy/deploy.local.env
+
 # Ignore package tarball (built via "mix hex.build").
 trip_planner_ia-*.tar
 
@@ -44,3 +47,6 @@ npm-debug.log
 /priv/data/*.db
 /priv/data/*.db-*
 
+
+# Local Netlify folder
+.netlify

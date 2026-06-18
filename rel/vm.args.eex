@@ -1,0 +1,6 @@
+## Customize flags for 512MB Lightsail instances
+-smp enable
++S 1:1
++sbwt none
++sbwtdcpu none
++sbwtdio none

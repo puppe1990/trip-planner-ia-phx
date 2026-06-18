@@ -25,6 +25,7 @@ sync_env_from_original() {
     return 1
   fi
 
+  # Prefer Netlify production env (TanStack export); falls back to local ai-trip-planner/.env
   scripts/copy_env.sh
 }
 

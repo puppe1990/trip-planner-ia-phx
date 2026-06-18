@@ -40,7 +40,7 @@ defmodule TripPlannerIa.AiConfig do
   @provider_defaults %{
     "gemini" => %{
       display_name: "Google Gemini",
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       capabilities: %{structured_json: true, web_grounding: true}
     },
     "nvidia-nim" => %{

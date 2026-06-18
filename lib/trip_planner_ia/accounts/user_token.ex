@@ -56,10 +56,12 @@ defmodule TripPlannerIa.Accounts.UserToken do
   not expired (after @session_validity_in_days).
   """
   def verify_session_token_query(token) do
+    cutoff = token_cutoff(@session_validity_in_days, :day)
+
     query =
       from token in by_token_and_context_query(token, "session"),
         join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
+        where: token.inserted_at > ^cutoff,
         select: {%{user | authenticated_at: token.authenticated_at}, token.inserted_at}
 
     {:ok, query}
@@ -109,10 +111,12 @@ defmodule TripPlannerIa.Accounts.UserToken do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
 
+        cutoff = token_cutoff(@magic_link_validity_in_minutes, :minute)
+
         query =
           from token in by_token_and_context_query(hashed_token, "login"),
             join: user in assoc(token, :user),
-            where: token.inserted_at > ago(^@magic_link_validity_in_minutes, "minute"),
+            where: token.inserted_at > ^cutoff,
             where: token.sent_to == user.email,
             select: {user, token}
 
@@ -139,9 +143,11 @@ defmodule TripPlannerIa.Accounts.UserToken do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
 
+        cutoff = token_cutoff(@change_email_validity_in_days, :day)
+
         query =
           from token in by_token_and_context_query(hashed_token, context),
-            where: token.inserted_at > ago(@change_email_validity_in_days, "day")
+            where: token.inserted_at > ^cutoff
 
         {:ok, query}
 
@@ -152,5 +158,10 @@ defmodule TripPlannerIa.Accounts.UserToken do
 
   defp by_token_and_context_query(token, context) do
     from UserToken, where: [token: ^token, context: ^context]
+  end
+
+  # LibSQL/SQLite does not evaluate Ecto's `ago/2` correctly for token expiry.
+  defp token_cutoff(amount, unit) do
+    DateTime.utc_now(:second) |> DateTime.add(-amount, unit)
   end
 end

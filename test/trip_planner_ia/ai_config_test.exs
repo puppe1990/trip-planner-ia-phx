@@ -50,7 +50,7 @@ defmodule TripPlannerIa.AiConfigTest do
       assert AiConfig.get_ai_config() == %{
                provider_id: "gemini",
                provider: "Google Gemini",
-               model: "gemini-3.5-flash",
+               model: "gemini-2.5-flash",
                capabilities: %{structured_json: true, web_grounding: true}
              }
     end

@@ -10,6 +10,12 @@ defmodule TripPlannerIaWeb.UserAuthTest do
   @remember_me_cookie "_trip_planner_ia_web_user_remember_me"
   @remember_me_cookie_max_age 60 * 60 * 24 * 14
 
+  defp session_token(conn) do
+    conn
+    |> get_session(:user_token)
+    |> Base.url_decode64!(padding: false)
+  end
+
   setup %{conn: conn} do
     conn =
       conn
@@ -22,9 +28,9 @@ defmodule TripPlannerIaWeb.UserAuthTest do
   describe "log_in_user/3" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
-      assert token = get_session(conn, :user_token)
+      assert get_session(conn, :user_token)
       assert redirected_to(conn) == ~p"/"
-      assert Accounts.get_user_by_session_token(token)
+      assert Accounts.get_user_by_session_token(session_token(conn))
     end
 
     test "clears everything previously stored in the session", %{conn: conn, user: user} do
@@ -64,7 +70,7 @@ defmodule TripPlannerIaWeb.UserAuthTest do
 
     test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
       conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
+      assert session_token(conn) == conn.cookies[@remember_me_cookie]
       assert get_session(conn, :user_remember_me) == true
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
@@ -74,7 +80,7 @@ defmodule TripPlannerIaWeb.UserAuthTest do
 
     test "writes a cookie if remember_me was set in previous session", %{conn: conn, user: user} do
       conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
+      assert session_token(conn) == conn.cookies[@remember_me_cookie]
       assert get_session(conn, :user_remember_me) == true
 
       conn =
@@ -147,7 +153,7 @@ defmodule TripPlannerIaWeb.UserAuthTest do
 
       assert conn.assigns.current_scope.user.id == user.id
       assert conn.assigns.current_scope.user.authenticated_at == user.authenticated_at
-      assert get_session(conn, :user_token) == user_token
+      assert session_token(conn) == user_token
       assert get_session(conn, :user_remember_me)
     end
 
